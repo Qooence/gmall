@@ -1,0 +1,21 @@
+# 服务端口
+server:
+  port: 8081
+
+logging:
+  level:
+   root: info
+
+dubbo:
+  application:
+    name: manage-web
+  protocol:
+    name: dubbo
+  registry:
+    address: 127.0.0.1:2181
+    protocol: zookeeper
+  base-package: com.bbo.gmall
+  consumer:
+    timeout: 600000
+    check: false
+
