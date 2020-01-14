@@ -8,7 +8,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>com.bbo.gmall</groupId>
@@ -31,12 +31,14 @@
         <jsoup.version>1.11.2</jsoup.version>
         <httpclient.version>4.5.5</httpclient.version>
         <commons-lang3.version>3.7</commons-lang3.version>
-        <mapper-starter.version>2.1.5</mapper-starter.version>
+        <mapper-starter.version>2.0.2</mapper-starter.version>
         <jedis.version>2.9.0</jedis.version>
         <jest.version>5.3.3</jest.version>
         <jna.version>4.5.1</jna.version>
         <beanUtils.version>1.9.3</beanUtils.version>
         <druid.version>1.1.9</druid.version>
+        <mysql-connector-java.version>8.0.17</mysql-connector-java.version>
+        <pagehelper.version>1.2.5</pagehelper.version>
     </properties>
 
     <dependencyManagement>
@@ -73,9 +75,27 @@
             </dependency>
 
             <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.version}</version>
+                <groupId>tk.mybatis</groupId>
+                <artifactId>mapper-spring-boot-starter</artifactId>
+                <version>${mapper-starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
             </dependency>
 
             <dependency>
@@ -96,14 +116,12 @@
                 <version>${batik-ext.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
@@ -117,31 +135,17 @@
             </dependency>
 
             <dependency>
-                <groupId>tk.mybatis</groupId>
-                <artifactId>mapper-spring-boot-starter</artifactId>
-                <version>${mapper-starter.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
-                <version>${druid.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/io.searchbox/jest -->
             <dependency>
                 <groupId>io.searchbox</groupId>
                 <artifactId>jest</artifactId>
                 <version>${jest.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
