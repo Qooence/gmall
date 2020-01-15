@@ -1,0 +1,65 @@
+{
+  "name": "gmall-admin",
+  "version": "1.0.0",
+  "private": false,
+  "scripts": {
+    "dev": "vue-cli-service serve --open",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "axios": "^0.19.1",
+    "clipboard": "^2.0.4",
+    "codemirror": "^5.50.2",
+    "countup": "^1.8.2",
+    "cropperjs": "^1.5.6",
+    "dayjs": "^1.8.19",
+    "echarts": "^4.6.0",
+    "html2canvas": "^1.0.0-rc.5",
+    "view-design": "^4.1.0",
+    "iview-area": "^1.6.0",
+    "js-cookie": "^2.2.1",
+    "simplemde": "^1.11.2",
+    "sortablejs": "^1.10.2",
+    "tree-table-vue": "^1.1.0",
+    "v-org-tree": "^1.0.12",
+    "vue": "^2.6.11",
+    "vue-i18n": "^8.15.3",
+    "vue-router": "^3.1.4",
+    "vuedraggable": "^2.23.2",
+    "vuex": "^3.1.2",
+    "wangeditor": "^3.1.1",
+    "xlsx": "^0.15.4"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.1.2",
+    "@vue/cli-plugin-eslint": "^4.1.2",
+    "@vue/cli-plugin-unit-mocha": "^4.1.2",
+    "@vue/cli-service": "^4.1.2",
+    "@vue/eslint-config-standard": "^5.1.0",
+    "chai": "^4.2.0",
+    "eslint-plugin-cypress": "^2.8.1",
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0",
+    "lint-staged": "^9.5.0",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}

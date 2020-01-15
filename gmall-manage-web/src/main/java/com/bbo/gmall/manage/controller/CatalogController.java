@@ -5,22 +5,18 @@ import com.bbo.gmall.bean.PmsBaseCatalog2;
 import com.bbo.gmall.bean.PmsBaseCatalog3;
 import com.bbo.gmall.service.CatalogService;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
-@CrossOrigin
+@RestController
 public class CatalogController {
 
     @Reference
     CatalogService catalogService;
 
     @RequestMapping("getCatalog3")
-    @ResponseBody
     public List<PmsBaseCatalog3> getCatalog3(String catalog2Id){
 
         List<PmsBaseCatalog3> catalog3s = catalogService.getCatalog3(catalog2Id);
@@ -29,7 +25,6 @@ public class CatalogController {
 
 
     @RequestMapping("getCatalog2")
-    @ResponseBody
     public List<PmsBaseCatalog2> getCatalog2(String catalog1Id){
 
         List<PmsBaseCatalog2> catalog2s = catalogService.getCatalog2(catalog1Id);
@@ -37,9 +32,7 @@ public class CatalogController {
     }
 
     @RequestMapping("getCatalog1")
-    @ResponseBody
     public List<PmsBaseCatalog1> getCatalog1(){
-
         List<PmsBaseCatalog1> catalog1s = catalogService.getCatalog1();
         return catalog1s;
     }

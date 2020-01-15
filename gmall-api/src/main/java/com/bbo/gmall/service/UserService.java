@@ -1,5 +1,6 @@
 package com.bbo.gmall.service;
 
+import com.bbo.gmall.base.BaseService;
 import com.bbo.gmall.bean.UmsMember;
 import com.bbo.gmall.bean.UmsMemberReceiveAddress;
 

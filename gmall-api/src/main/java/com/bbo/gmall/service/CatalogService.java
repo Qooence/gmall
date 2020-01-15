@@ -1,5 +1,6 @@
 package com.bbo.gmall.service;
 
+import com.bbo.gmall.base.BaseService;
 import com.bbo.gmall.bean.PmsBaseCatalog1;
 import com.bbo.gmall.bean.PmsBaseCatalog2;
 import com.bbo.gmall.bean.PmsBaseCatalog3;

@@ -1,0 +1,154 @@
+<template>
+    <div>
+      <Card class="card-search">
+        <Form :model="searchParam" :label-width="80">
+          <Row>
+            <Col span="7">
+              <FormItem label="一级标题">
+                <Select v-model="searchParam.catalog1Id" placeholder="一级标题" @on-change="catalog1Change" clearable>
+                    <Option v-for="item in catalogList1" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="7">
+              <FormItem label="二级标题">
+                <Select v-model="searchParam.catalog2Id" placeholder="二级标题" @on-change="catalog2Change" clearable>
+                    <Option v-for="item in catalogList2" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="7">
+              <FormItem label="三级标题">
+                <Select v-model="searchParam.catalog3Id" placeholder="三级标题" clearable>
+                    <Option v-for="item in catalogList3" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="3" class=" card-search-search-btn-box" :label-width="10">
+              <Button type="primary" @click="search">搜索</Button>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
+      <Card class="card-content">
+        <div class="card-content-table">
+          <Table border
+            ref="selection"
+            :loading="loading"
+            :columns="colData"
+            :data="listData">
+          </Table>
+        </div>
+        <div class="card-content-pages">
+          <Page :total="totalCount"
+            show-elevator
+            show-total
+            :page-size="searchParam.limit"
+            @on-change='change'
+            @on-page-size-change='change'>
+          </Page>
+        </div>
+      </Card>
+    </div>
+</template>
+<script>
+import { mapActions } from 'vuex'
+export default {
+  data () {
+    return {
+      searchParam: {
+        page: 1,
+        limit: 10
+      },
+      loading: false,
+      catalogList1: [],
+      catalogList2: [],
+      catalogList3: [],
+      colData: [
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        {
+          title: 'ID',
+          key: 'id',
+          tooltip: true,
+          align: 'center'
+        },
+        {
+          title: '名称',
+          key: 'name',
+          tooltip: true,
+          align: 'center'
+        }
+      ],
+      listData: [],
+      totalCount: 0
+    }
+  },
+  methods: {
+    ...mapActions(['getCatalog1','getCatalog2','getCatalog3','getAttrInfoList']),
+    search () {
+      if(this.searchParam.catalog3Id){
+        this.searchParam.page = 1
+        this.initData()
+      }else{
+        this.$Notice.warning({
+          title:'提示',
+          desc: '请完善到三级标题'
+        })
+      }
+    },
+    change (value) {
+      this.searchParam.page = value
+      this.initData()
+    },
+    catalog1Change(value){
+      this.$set(this.searchParam, 'catalog3Id', '')
+      this.catalogList3.length = 0
+      if(value){
+        this.getCatalog2List(value)
+      }else{
+        this.$set(this.searchParam, 'catalog2Id', '')
+        this.catalogList2.length = 0
+      }
+    },
+    catalog2Change(value){
+      if(value){
+        this.getCatalog3List(value);
+      }else{
+        this.$set(this.searchParam, 'catalog3Id', '')
+        this.catalogList3.length = 0
+      }
+    },
+    getCatalog1List(){
+      this.getCatalog1().then(data => {
+        this.catalogList1 = data
+      })
+    },
+    getCatalog2List(calalog1Id){
+      this.getCatalog2(calalog1Id).then(data => {
+        this.catalogList2 = data
+      })
+    },
+    getCatalog3List(calalog2Id){
+      this.getCatalog3(calalog2Id).then(data => {
+        this.catalogList3 = data
+      })
+    },
+    initData() {
+      this.getAttrInfoList(this.searchParam.catalog3Id).then(data => {
+        console.log(data)
+        this.listData = data
+      })
+    }
+  },
+  mounted () {
+    this.getCatalog1List()
+  }
+}
+</script>
+<style lang="less">
+  @import "~@/style/style.less";
+</style>

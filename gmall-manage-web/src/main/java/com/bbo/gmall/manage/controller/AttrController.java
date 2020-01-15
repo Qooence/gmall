@@ -1,35 +1,38 @@
 package com.bbo.gmall.manage.controller;
 
 import com.bbo.gmall.bean.PmsBaseAttrInfo;
+import com.bbo.gmall.response.Response;
 import com.bbo.gmall.service.AttrService;
+import com.github.pagehelper.PageInfo;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@CrossOrigin
+@RestController
 public class AttrController  {
 
     @Reference
     AttrService attrService;
 
     @RequestMapping("saveAttrInfo")
-    @ResponseBody
     public String saveAttrInfo(@RequestBody PmsBaseAttrInfo pmsBaseAttrInfo){
 
         return "success";
     }
 
-    @RequestMapping("attrInfoList")
-    @ResponseBody
-    public List<PmsBaseAttrInfo> attrInfoList(String catalog3Id){
+//    @RequestMapping("attrInfoList")
+//    public List<PmsBaseAttrInfo> attrInfoList(String catalog3Id){
+//
+//        List<PmsBaseAttrInfo> pmsBaseAttrInfos = attrService.attrInfoList(catalog3Id);
+//        return pmsBaseAttrInfos;
+//    }
 
-        List<PmsBaseAttrInfo> pmsBaseAttrInfos = attrService.attrInfoList(catalog3Id);
-        return pmsBaseAttrInfos;
+    @RequestMapping("attrInfoList")
+    public Response attrInfoList1(@RequestParam(defaultValue = "1")Integer pageNum,
+                                  @RequestParam(defaultValue = "5")Integer pageSize,String catalog3Id){
+        PageInfo<PmsBaseAttrInfo> pmsBaseAttrInfos = attrService.attrInfoList1(pageNum,pageSize,catalog3Id);
+        System.out.println(pmsBaseAttrInfos.toString());
+        return Response.success(pmsBaseAttrInfos);
     }
 }
