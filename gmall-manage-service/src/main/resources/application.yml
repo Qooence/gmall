@@ -39,7 +39,7 @@ mybatis:
 
 logging:
   level:
-    root: info
+    com.bbo.gmall.manage.mapper: DEBUG
 
 dubbo:
   application:

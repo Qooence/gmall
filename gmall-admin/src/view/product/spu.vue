@@ -32,11 +32,7 @@
       </Card>
       <Card class="card-content">
         <div class="card-content-table">
-          <Table border
-            ref="selection"
-            :loading="loading"
-            :columns="colData"
-            :data="listData">
+          <Table border ref="selection" :loading="loading" :columns="colData" :data="listData">
           </Table>
         </div>
         <div class="card-content-pages">
@@ -78,7 +74,7 @@ export default {
         },
         {
           title: '名称',
-          key: 'name',
+          key: 'attrName',
           tooltip: true,
           align: 'center'
         }
@@ -138,9 +134,9 @@ export default {
       })
     },
     initData() {
-      this.getAttrInfoList(this.searchParam.catalog3Id).then(data => {
-        console.log(data)
-        this.listData = data
+      this.getAttrInfoList(this.searchParam.catalog3Id).then(res => {
+        this.listData = res.data.list
+        this.totalCount = res.data.total
       })
     }
   },

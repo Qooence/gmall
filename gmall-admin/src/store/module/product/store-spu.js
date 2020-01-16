@@ -1,4 +1,4 @@
-import { getCatalog1, getCatalog2, getCatalog3, getAttrInfoList } from '@/api/product/spu'
+import { getCatalog1, getCatalog2, getCatalog3, getAttrInfoList } from '@/api/product/api-spu'
 
 export default {
     actions: {
@@ -47,12 +47,13 @@ export default {
         getAttrInfoList({ state, commit },catalog3Id) {
             return new Promise((resolve, reject) => {
                 try {
-                    getCatalog3(catalog3Id).then(res => {
-                        const data = res.data
-                        resolve(data)
-                    }).catch(err => {
-                        reject(err)
-                    })
+                  getAttrInfoList(catalog3Id).then(res => {
+                    const data = res.data
+                    console.log(data)
+                    resolve(data)
+                  }).catch(err => {
+                    reject(err)
+                  })
                 } catch (error) {
                     reject(error)
                 }
