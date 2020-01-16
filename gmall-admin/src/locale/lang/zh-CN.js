@@ -43,6 +43,7 @@ export default {
   org_tree_page: '组织结构树',
   drag_drawer_page: '可拖动抽屉',
   tree_select_page: '树状下拉选择器',
-  product: '商品管理',
-  spu: '商品'
+  base_message: '基本信息管理',
+  attr: '平台属性',
+  product: '商品信息'
 }

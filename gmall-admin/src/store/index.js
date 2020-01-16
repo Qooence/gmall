@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 import user from './module/user'
 import app from './module/app'
-import productSpu from './module/product/store-spu'
+import baseAttr from './module/base-message/store-attr'
 
 Vue.use(Vuex)
 
@@ -20,6 +20,6 @@ export default new Vuex.Store({
   modules: {
     user,
     app,
-    productSpu
+    baseAttr
   }
 })

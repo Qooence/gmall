@@ -347,22 +347,32 @@ export default [
     ]
   },
   {
-    path: '/product',
-    name: 'product',
+    path: '/base_message',
+    name: 'base_message',
     meta: {
       hideInBread: true,
-      title: '商品管理'
+      icon: 'ios-bug',
+      title: '基本信息管理'
     },
     component: Main,
     children: [
       {
-        path: 'spu',
-        name: 'spu',
+        path: 'attr',
+        name: 'attr',
         meta: {
           icon: 'ios-bug',
-          title: '商品'
+          title: '平台属性'
         },
-        component: () => import('@/view/product/spu.vue')
+        component: () => import('@/view/base-message/attr.vue')
+      },
+      {
+        path: 'product',
+        name: 'product',
+        meta: {
+          icon: 'ios-bug',
+          title: '商品信息'
+        },
+        component: () => import('@/view/base-message/attr.vue')
       }
     ]
   },

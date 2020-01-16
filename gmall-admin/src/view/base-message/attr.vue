@@ -31,6 +31,12 @@
         </Form>
       </Card>
       <Card class="card-content">
+        <p slot="title" class="card-content-title">
+          <Row type="flex" justify="start" class="card-content-row">
+            <Col span="12" class="card-content-add"><img src="@/assets/images/icon-add.png"></Col>
+            <Col span="12"><img src="@/assets/images/icon-delete.png"></Col>
+          </Row>
+        </p>
         <div class="card-content-table">
           <Table border ref="selection" :loading="loading" :columns="colData" :data="listData">
           </Table>

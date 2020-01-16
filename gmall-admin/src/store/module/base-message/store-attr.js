@@ -1,4 +1,4 @@
-import { getCatalog1, getCatalog2, getCatalog3, getAttrInfoList } from '@/api/product/api-spu'
+import { getCatalog1, getCatalog2, getCatalog3, getAttrInfoList } from '@/api/base-message/api-attr'
 
 export default {
     actions: {
