@@ -53,8 +53,8 @@ export default {
   data () {
     return {
       searchParam: {
-        page: 1,
-        limit: 10
+        // pageNum: 1,
+        pageSize: 10
       },
       loading: false,
       catalogList1: [],
@@ -87,7 +87,7 @@ export default {
     ...mapActions(['getCatalog1','getCatalog2','getCatalog3','getAttrInfoList']),
     search () {
       if(this.searchParam.catalog3Id){
-        this.searchParam.page = 1
+        // this.searchParam.pageNum = 1
         this.initData()
       }else{
         this.$Notice.warning({
@@ -97,7 +97,7 @@ export default {
       }
     },
     change (value) {
-      this.searchParam.page = value
+      this.searchParam.pageNum = value
       this.initData()
     },
     catalog1Change(value){
@@ -134,7 +134,7 @@ export default {
       })
     },
     initData() {
-      this.getAttrInfoList(this.searchParam.catalog3Id).then(res => {
+      this.getAttrInfoList(this.searchParam).then(res => {
         this.listData = res.data.list
         this.totalCount = res.data.total
       })

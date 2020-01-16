@@ -21,16 +21,7 @@ public class AttrServiceImpl extends BaseServiceImpl<PmsBaseAttrInfo> implements
     PmsBaseAttrValueMapper pmsBaseAttrValueMapper;
 
     @Override
-    public List<PmsBaseAttrInfo> attrInfoList(String catalog3Id) {
-
-        PmsBaseAttrInfo pmsBaseAttrInfo = new PmsBaseAttrInfo();
-        pmsBaseAttrInfo.setCatalog3Id(catalog3Id);
-        List<PmsBaseAttrInfo> pmsBaseAttrInfos = pmsBaseAttrInfoMapper.select(pmsBaseAttrInfo);
-        return pmsBaseAttrInfos;
-    }
-
-    @Override
-    public PageInfo<PmsBaseAttrInfo> attrInfoList1(Integer pageNum, Integer pageSize,String catalog3Id) {
+    public PageInfo<PmsBaseAttrInfo> attrInfoList(Integer pageNum, Integer pageSize,String catalog3Id) {
 
         PmsBaseAttrInfo pmsBaseAttrInfo = new PmsBaseAttrInfo();
         pmsBaseAttrInfo.setCatalog3Id(catalog3Id);

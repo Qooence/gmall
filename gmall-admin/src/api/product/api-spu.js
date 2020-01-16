@@ -23,10 +23,10 @@ export const getCatalog3 = (catalog2Id) => {
     })
 }
 
-export const getAttrInfoList = (catalog3Id) => {
+export const getAttrInfoList = (searchParam) => {
     return axios.request({
         url: 'attrInfoList',
-        params: {catalog3Id},
+        params: searchParam,
         method: 'get'
     })
 }

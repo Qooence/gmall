@@ -37,6 +37,13 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+  returnPageInfo: check
+
 logging:
   level:
     com.bbo.gmall.manage.mapper: DEBUG

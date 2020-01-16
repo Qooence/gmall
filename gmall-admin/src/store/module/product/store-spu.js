@@ -44,12 +44,11 @@ export default {
                 }
             })
         },
-        getAttrInfoList({ state, commit },catalog3Id) {
+        getAttrInfoList({ state, commit },searchParam) {
             return new Promise((resolve, reject) => {
                 try {
-                  getAttrInfoList(catalog3Id).then(res => {
+                  getAttrInfoList(searchParam).then(res => {
                     const data = res.data
-                    console.log(data)
                     resolve(data)
                   }).catch(err => {
                     reject(err)

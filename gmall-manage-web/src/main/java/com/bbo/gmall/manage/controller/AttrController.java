@@ -21,18 +21,10 @@ public class AttrController  {
         return "success";
     }
 
-//    @RequestMapping("attrInfoList")
-//    public List<PmsBaseAttrInfo> attrInfoList(String catalog3Id){
-//
-//        List<PmsBaseAttrInfo> pmsBaseAttrInfos = attrService.attrInfoList(catalog3Id);
-//        return pmsBaseAttrInfos;
-//    }
-
     @RequestMapping("attrInfoList")
-    public Response attrInfoList1(@RequestParam(defaultValue = "1")Integer pageNum,
+    public Response attrInfoList(@RequestParam(defaultValue = "1")Integer pageNum,
                                   @RequestParam(defaultValue = "5")Integer pageSize,String catalog3Id){
-        PageInfo<PmsBaseAttrInfo> pmsBaseAttrInfos = attrService.attrInfoList1(pageNum,pageSize,catalog3Id);
-        System.out.println(pmsBaseAttrInfos.toString());
+        PageInfo<PmsBaseAttrInfo> pmsBaseAttrInfos = attrService.attrInfoList(pageNum,pageSize,catalog3Id);
         return Response.success(pmsBaseAttrInfos);
     }
 }
