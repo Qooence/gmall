@@ -2,6 +2,7 @@ package com.bbo.gmall.manage.controller;
 
 import com.bbo.gmall.bean.PmsBaseAttrInfo;
 import com.bbo.gmall.response.Response;
+import com.bbo.gmall.response.ResponseCode;
 import com.bbo.gmall.service.AttrService;
 import com.github.pagehelper.PageInfo;
 import org.apache.dubbo.config.annotation.Reference;
@@ -16,9 +17,12 @@ public class AttrController  {
     AttrService attrService;
 
     @RequestMapping("saveAttrInfo")
-    public String saveAttrInfo(@RequestBody PmsBaseAttrInfo pmsBaseAttrInfo){
-
-        return "success";
+    public Response saveAttrInfo(@RequestBody PmsBaseAttrInfo pmsBaseAttrInfo){
+        if(null == pmsBaseAttrInfo){
+            Response.error(ResponseCode.DATA_IS_EXIST,"数据异常");
+        }
+        attrService.saveAttrInfo(pmsBaseAttrInfo);
+        return Response.success("保存成功");
     }
 
     @RequestMapping("attrInfoList")
@@ -26,5 +30,11 @@ public class AttrController  {
                                   @RequestParam(defaultValue = "5")Integer pageSize,String catalog3Id){
         PageInfo<PmsBaseAttrInfo> pmsBaseAttrInfos = attrService.attrInfoList(pageNum,pageSize,catalog3Id);
         return Response.success(pmsBaseAttrInfos);
+    }
+
+    @RequestMapping("/detail/{id}")
+    public Response detail(@PathVariable String id){
+        PmsBaseAttrInfo attrInfo = attrService.detail(id);
+        return Response.success("查询成功",attrInfo);
     }
 }

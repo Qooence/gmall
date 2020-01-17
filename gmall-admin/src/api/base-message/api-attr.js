@@ -30,3 +30,18 @@ export const getAttrInfoList = (searchParam) => {
         method: 'get'
     })
 }
+
+export const saveAttrInfo = (data) => {
+    return axios.request({
+        url: 'saveAttrInfo',
+        data: data,
+        method: 'post'
+    })
+}
+
+export const attrDetail = (id) => {
+    return axios.request({
+        url: `detail/${id}`,
+        method: 'get'
+    })
+}

@@ -1,18 +1,24 @@
 package com.bbo.gmall.manage.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.bbo.gmall.bean.PmsBaseAttrInfo;
+import com.bbo.gmall.bean.PmsBaseAttrValue;
 import com.bbo.gmall.manage.config.BaseServiceImpl;
 import com.bbo.gmall.manage.mapper.PmsBaseAttrInfoMapper;
 import com.bbo.gmall.manage.mapper.PmsBaseAttrValueMapper;
 import com.bbo.gmall.service.AttrService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class AttrServiceImpl extends BaseServiceImpl<PmsBaseAttrInfo> implements AttrService {
 
     @Autowired
@@ -32,8 +38,52 @@ public class AttrServiceImpl extends BaseServiceImpl<PmsBaseAttrInfo> implements
             PageHelper.startPage(1, 25);
         }
         List<PmsBaseAttrInfo> pmsBaseAttrInfos = pmsBaseAttrInfoMapper.select(pmsBaseAttrInfo);
+        if(CollectionUtil.isNotEmpty(pmsBaseAttrInfos)){
+            pmsBaseAttrInfos.forEach(item  ->{
+                item.setAttrValueList(getAttrValueByAttrId(item.getId()));
+            });
+        }
         PageInfo<PmsBaseAttrInfo> pageInfo = new PageInfo<>(pmsBaseAttrInfos);
 
         return pageInfo;
     }
+
+    @Override
+    @Transactional
+    public void saveAttrInfo(PmsBaseAttrInfo attrInfo) {
+        if(StringUtils.isNotBlank(attrInfo.getId())){
+            pmsBaseAttrInfoMapper.updateByPrimaryKeySelective(attrInfo);
+            Example example = new Example(PmsBaseAttrValue.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("attrId",attrInfo.getId());
+            pmsBaseAttrValueMapper.deleteByExample(example);
+        }else{
+            attrInfo.setIsEnabled("1");
+            pmsBaseAttrInfoMapper.insertSelective(attrInfo);
+        }
+
+        if(CollectionUtil.isNotEmpty(attrInfo.getAttrValueList())){
+            for(PmsBaseAttrValue attrValue: attrInfo.getAttrValueList()){
+                attrValue.setIsEnabled("1");
+                attrValue.setAttrId(attrInfo.getId());
+                pmsBaseAttrValueMapper.insertSelective(attrValue);
+            }
+        }
+    }
+
+    @Override
+    public PmsBaseAttrInfo detail(String id) {
+        PmsBaseAttrInfo attrInfo = pmsBaseAttrInfoMapper.selectByPrimaryKey(id);
+        attrInfo.setAttrValueList(getAttrValueByAttrId(attrInfo.getId()));
+        return attrInfo;
+    }
+
+    private List<PmsBaseAttrValue> getAttrValueByAttrId(String attrId){
+        Example example = new Example(PmsBaseAttrValue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("attrId",attrId);
+        List<PmsBaseAttrValue> list = pmsBaseAttrValueMapper.selectByExample(example);
+        return list;
+    }
+
 }

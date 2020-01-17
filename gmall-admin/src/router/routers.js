@@ -363,7 +363,7 @@ export default [
           icon: 'ios-bug',
           title: '平台属性'
         },
-        component: () => import('@/view/base-message/attr.vue')
+        component: () => import('@/view/base-message/attr')
       },
       {
         path: 'product',
@@ -372,7 +372,7 @@ export default [
           icon: 'ios-bug',
           title: '商品信息'
         },
-        component: () => import('@/view/base-message/attr.vue')
+        component: () => import('@/view/base-message/attr')
       }
     ]
   },

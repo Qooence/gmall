@@ -24,7 +24,7 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="3" class=" card-search-search-btn-box" :label-width="10">
+            <Col span="2" offset="1" class=" card-search-search-btn-box" :label-width="10">
               <Button type="primary" @click="search">搜索</Button>
             </Col>
           </Row>
@@ -33,8 +33,8 @@
       <Card class="card-content">
         <p slot="title" class="card-content-title">
           <Row type="flex" justify="start" class="card-content-row">
-            <Col span="12" class="card-content-add"><img src="@/assets/images/icon-add.png"></Col>
-            <Col span="12"><img src="@/assets/images/icon-delete.png"></Col>
+            <Col span="12" class="card-content-add"><img @click="toSave()" src="@/assets/images/icon-add.png"/></Col>
+            <Col span="12"><img src="@/assets/images/icon-delete.png"/></Col>
           </Row>
         </p>
         <div class="card-content-table">
@@ -42,20 +42,20 @@
           </Table>
         </div>
         <div class="card-content-pages">
-          <Page :total="totalCount"
-            show-elevator
-            show-total
-            :page-size="searchParam.limit"
-            @on-change='change'
-            @on-page-size-change='change'>
-          </Page>
+          <Page :total="totalCount" show-elevator show-total :page-size="searchParam.limit" @on-change='change' @on-page-size-change='change'></Page>
         </div>
       </Card>
+      <attr-save ref="attrSave" @refresh='initData'></attr-save>
     </div>
 </template>
 <script>
 import { mapActions } from 'vuex'
+import attrSave from './attr-save'
 export default {
+  name: 'attr',
+  components: {
+    attrSave
+  },
   data () {
     return {
       searchParam: {
@@ -73,9 +73,9 @@ export default {
           align: 'center'
         },
         {
-          title: 'ID',
-          key: 'id',
-          tooltip: true,
+          title: '序号',
+          type: 'index',
+          width: 80,
           align: 'center'
         },
         {
@@ -83,6 +83,29 @@ export default {
           key: 'attrName',
           tooltip: true,
           align: 'center'
+        },
+        {
+          title: '属性值',
+          align: 'center',
+          render: (h, params) => {
+            let row = params.row
+            if(row.attrValueList && row.attrValueList.length > 0){
+              let tags = []
+              row.attrValueList.forEach(item => {
+                tags.push((<Tag checkable color="success">{item.valueName}</Tag>))
+              })
+              return (<div>{tags}</div>)
+            }
+          }
+        },
+        {
+          title: '操作',
+          width: 150,
+          align: 'center',
+          render: (h, params) => {
+            let row = params.row;
+            return (<Button type='warning' onClick={() => this.toSave(row.id)}>修改</Button>)
+          }
         }
       ],
       listData: [],
@@ -144,6 +167,16 @@ export default {
         this.listData = res.data.list
         this.totalCount = res.data.total
       })
+    },
+    toSave(id){
+      if(this.searchParam.catalog3Id){
+        this.$refs.attrSave.init(id ? id : null,this.searchParam.catalog3Id);
+      }else{
+        this.$Notice.warning({
+          title:'提示',
+          desc: '请完善到三级标题'
+        })
+      }
     }
   },
   mounted () {
