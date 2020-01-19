@@ -45,14 +45,13 @@ export default {
     methods: {
         ...mapActions(['saveAttrInfo','attrDetail']),
         init(id, catalog3Id) {
-            console.log(id,catalog3Id)
             this.formData.catalog3Id = catalog3Id;
             if(id){
                 this.title = '修改'
                 this.attrDetail(id).then(res =>{
                     this.formData.id = res.data.id
                     this.formData.catalog3Id = res.data.catalog3Id
-                    this.formData.attrName = res.data.attrName
+                    this.$set(this.formData, 'attrName', res.data.attrName)
                     if(res.data.attrValueList){
                         let arr = res.data.attrValueList
                         for(let i = 0; i < arr.length; i++){
@@ -62,7 +61,6 @@ export default {
                             })
                         }
                     }
-                    console.log(this.formData)
                 })
             }else{
                 this.title = '新增'
@@ -77,7 +75,7 @@ export default {
             })
         },
         handleRemove(index) {
-            this.formData.attrValueList.splice(index);
+            this.formData.attrValueList.splice(index,1);
         },
         handleSubmit() {
             this.$refs['formData'].validate((valid) => {

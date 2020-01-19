@@ -53,10 +53,7 @@ public class AttrServiceImpl extends BaseServiceImpl<PmsBaseAttrInfo> implements
     public void saveAttrInfo(PmsBaseAttrInfo attrInfo) {
         if(StringUtils.isNotBlank(attrInfo.getId())){
             pmsBaseAttrInfoMapper.updateByPrimaryKeySelective(attrInfo);
-            Example example = new Example(PmsBaseAttrValue.class);
-            Example.Criteria criteria = example.createCriteria();
-            criteria.andEqualTo("attrId",attrInfo.getId());
-            pmsBaseAttrValueMapper.deleteByExample(example);
+            deleteAttrValueByAttrId(attrInfo.getId());
         }else{
             attrInfo.setIsEnabled("1");
             pmsBaseAttrInfoMapper.insertSelective(attrInfo);
@@ -72,10 +69,20 @@ public class AttrServiceImpl extends BaseServiceImpl<PmsBaseAttrInfo> implements
     }
 
     @Override
+    @Transactional
     public PmsBaseAttrInfo detail(String id) {
         PmsBaseAttrInfo attrInfo = pmsBaseAttrInfoMapper.selectByPrimaryKey(id);
         attrInfo.setAttrValueList(getAttrValueByAttrId(attrInfo.getId()));
         return attrInfo;
+    }
+
+    @Override
+    @Transactional
+    public void deletes(String[] ids) {
+        for (String id : ids) {
+            pmsBaseAttrInfoMapper.deleteByPrimaryKey(id);
+            deleteAttrValueByAttrId(id);
+        }
     }
 
     private List<PmsBaseAttrValue> getAttrValueByAttrId(String attrId){
@@ -84,6 +91,13 @@ public class AttrServiceImpl extends BaseServiceImpl<PmsBaseAttrInfo> implements
         criteria.andEqualTo("attrId",attrId);
         List<PmsBaseAttrValue> list = pmsBaseAttrValueMapper.selectByExample(example);
         return list;
+    }
+
+    private void deleteAttrValueByAttrId(String attrId){
+        Example example = new Example(PmsBaseAttrValue.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("attrId",attrId);
+        pmsBaseAttrValueMapper.deleteByExample(example);
     }
 
 }

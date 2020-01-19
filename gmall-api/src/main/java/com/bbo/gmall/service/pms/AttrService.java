@@ -11,4 +11,6 @@ public interface AttrService extends BaseService<PmsBaseAttrInfo> {
     void saveAttrInfo(PmsBaseAttrInfo attrInfo);
 
     PmsBaseAttrInfo detail(String id);
+
+    void deletes(String[] ids);
 }

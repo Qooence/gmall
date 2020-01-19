@@ -45,3 +45,11 @@ export const attrDetail = (id) => {
         method: 'get'
     })
 }
+
+export const deleteAttrInfos = (data) => {
+    return axios.request({
+        url: 'deletes',
+        data: data,
+        method: 'delete'
+    })
+}

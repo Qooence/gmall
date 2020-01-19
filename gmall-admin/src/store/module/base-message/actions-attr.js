@@ -1,4 +1,12 @@
-import { getCatalog1, getCatalog2, getCatalog3, getAttrInfoList, saveAttrInfo,attrDetail } from '@/api/base-message/api-attr'
+import { 
+    getCatalog1, 
+    getCatalog2, 
+    getCatalog3, 
+    getAttrInfoList, 
+    saveAttrInfo,
+    attrDetail, 
+    deleteAttrInfos 
+} from '@/api/base-message/api-attr'
 
 export default {
     actions: {
@@ -72,10 +80,25 @@ export default {
                 }
             })
         },
-        attrDetail({ state, commit },id) {
+        attrDetail({ state, commit },ids) {
             return new Promise((resolve, reject) => {
                 try {
-                    attrDetail(id).then(res => {
+                    let data = {ids: ids}
+                    attrDetail(data).then(res => {
+                    const data = res.data
+                    resolve(data)
+                  }).catch(err => {
+                    reject(err)
+                  })
+                } catch (error) {
+                    reject(error)
+                }
+            })
+        },
+        deleteAttrInfos({ state, commit },ids) {
+            return new Promise((resolve, reject) => {
+                try {
+                    deleteAttrInfos(ids).then(res => {
                     const data = res.data
                     resolve(data)
                   }).catch(err => {

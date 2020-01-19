@@ -35,4 +35,10 @@ public class AttrController  {
         PmsBaseAttrInfo attrInfo = attrService.detail(id);
         return Response.success("查询成功",attrInfo);
     }
+
+    @DeleteMapping("deletes")
+    public Response deletes(@RequestBody String[] ids){
+        attrService.deletes(ids);
+        return Response.success("删除成功",null);
+    }
 }
