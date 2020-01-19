@@ -1,7 +1,7 @@
-package com.bbo.gmall.service;
+package com.bbo.gmall.service.pms;
 
 import com.bbo.gmall.base.BaseService;
-import com.bbo.gmall.bean.PmsBaseAttrInfo;
+import com.bbo.gmall.bean.pms.PmsBaseAttrInfo;
 import com.github.pagehelper.PageInfo;
 
 

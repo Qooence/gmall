@@ -1,14 +1,12 @@
 package com.bbo.gmall.manage.controller;
 
-import com.bbo.gmall.bean.PmsBaseAttrInfo;
+import com.bbo.gmall.bean.pms.PmsBaseAttrInfo;
 import com.bbo.gmall.response.Response;
 import com.bbo.gmall.response.ResponseCode;
-import com.bbo.gmall.service.AttrService;
+import com.bbo.gmall.service.pms.AttrService;
 import com.github.pagehelper.PageInfo;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class AttrController  {

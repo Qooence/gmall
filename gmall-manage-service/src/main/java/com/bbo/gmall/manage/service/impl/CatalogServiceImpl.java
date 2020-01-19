@@ -1,13 +1,12 @@
 package com.bbo.gmall.manage.service.impl;
 
-import com.bbo.gmall.bean.PmsBaseCatalog1;
-import com.bbo.gmall.bean.PmsBaseCatalog2;
-import com.bbo.gmall.bean.PmsBaseCatalog3;
-import com.bbo.gmall.manage.config.BaseServiceImpl;
+import com.bbo.gmall.bean.pms.PmsBaseCatalog1;
+import com.bbo.gmall.bean.pms.PmsBaseCatalog2;
+import com.bbo.gmall.bean.pms.PmsBaseCatalog3;
 import com.bbo.gmall.manage.mapper.PmsBaseCatalog1Mapper;
 import com.bbo.gmall.manage.mapper.PmsBaseCatalog2Mapper;
 import com.bbo.gmall.manage.mapper.PmsBaseCatalog3Mapper;
-import com.bbo.gmall.service.CatalogService;
+import com.bbo.gmall.service.pms.CatalogService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 

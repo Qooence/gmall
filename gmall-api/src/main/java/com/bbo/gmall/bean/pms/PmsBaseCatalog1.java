@@ -1,4 +1,4 @@
-package com.bbo.gmall.bean;
+package com.bbo.gmall.bean.pms;
 
 import lombok.Data;
 
@@ -6,22 +6,18 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * @param
- * @return
- */
 @Data
-public class PmsBaseCatalog2 implements Serializable {
+public class PmsBaseCatalog1 implements Serializable {
+    private static final long serialVersionUID = -4377082322109291089L;
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     @Column
     private String name;
-    @Column
-    private String catalog1Id;
 
     @Transient
-    private List<PmsBaseCatalog3> catalog3List;
+    private List<PmsBaseCatalog2> catalog2s;
 
 }
+

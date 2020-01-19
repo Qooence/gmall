@@ -1,9 +1,9 @@
 package com.bbo.gmall.user.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.bbo.gmall.bean.UmsMember;
-import com.bbo.gmall.bean.UmsMemberReceiveAddress;
-import com.bbo.gmall.service.UserService;
+import com.bbo.gmall.bean.ums.UmsMember;
+import com.bbo.gmall.bean.ums.UmsMemberReceiveAddress;
+import com.bbo.gmall.service.ums.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

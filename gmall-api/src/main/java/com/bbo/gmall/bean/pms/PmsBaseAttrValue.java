@@ -1,4 +1,4 @@
-package com.bbo.gmall.bean;
+package com.bbo.gmall.bean.pms;
 
 import lombok.Data;
 
@@ -7,12 +7,9 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.io.Serializable;
 
-/**
- * @param
- * @return
- */
 @Data
 public class PmsBaseAttrValue implements Serializable {
+    private static final long serialVersionUID = -6397918056732413661L;
     @Id
     @Column
     private String id;

@@ -1,4 +1,4 @@
-package com.bbo.gmall.bean;
+package com.bbo.gmall.bean.ums;
 
 import lombok.Data;
 
@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Data
 public class UmsMemberReceiveAddress implements Serializable {
 
+    private static final long serialVersionUID = -447655750300420781L;
     @Id
     private String id;
     private String memberId;

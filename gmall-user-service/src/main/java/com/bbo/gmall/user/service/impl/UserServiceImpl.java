@@ -2,9 +2,9 @@ package com.bbo.gmall.user.service.impl;
 
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.bbo.gmall.bean.UmsMember;
-import com.bbo.gmall.bean.UmsMemberReceiveAddress;
-import com.bbo.gmall.service.UserService;
+import com.bbo.gmall.bean.ums.UmsMember;
+import com.bbo.gmall.bean.ums.UmsMemberReceiveAddress;
+import com.bbo.gmall.service.ums.UserService;
 import com.bbo.gmall.user.mapper.UmsMemberReceiveAddressMapper;
 import com.bbo.gmall.user.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;

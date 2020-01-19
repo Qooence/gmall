@@ -1,8 +1,7 @@
-package com.bbo.gmall.service;
+package com.bbo.gmall.service.ums;
 
-import com.bbo.gmall.base.BaseService;
-import com.bbo.gmall.bean.UmsMember;
-import com.bbo.gmall.bean.UmsMemberReceiveAddress;
+import com.bbo.gmall.bean.ums.UmsMember;
+import com.bbo.gmall.bean.ums.UmsMemberReceiveAddress;
 
 import java.util.List;
 
