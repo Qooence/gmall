@@ -80,11 +80,10 @@ export default {
                 }
             })
         },
-        attrDetail({ state, commit },ids) {
+        attrDetail({ state, commit },id) {
             return new Promise((resolve, reject) => {
                 try {
-                    let data = {ids: ids}
-                    attrDetail(data).then(res => {
+                    attrDetail(id).then(res => {
                     const data = res.data
                     resolve(data)
                   }).catch(err => {

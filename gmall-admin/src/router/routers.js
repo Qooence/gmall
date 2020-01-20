@@ -372,7 +372,7 @@ export default [
           icon: 'ios-bug',
           title: '商品信息'
         },
-        component: () => import('@/view/base-message/attr')
+        component: () => import('@/view/base-message/product')
       }
     ]
   },
