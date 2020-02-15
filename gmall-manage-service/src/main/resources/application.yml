@@ -56,3 +56,9 @@ dubbo:
   registry:
     address: 127.0.0.1:2181
     protocol: zookeeper
+  qos:
+    enable: true
+    port: 33333
+    accept:
+      foreign:
+        ip: false

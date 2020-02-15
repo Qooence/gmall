@@ -100,9 +100,6 @@ export default {
             this.value = false
             this.formData = { attrValueList: []}
             this.$refs.formData.resetFields()
-        },
-        handleReset (name) {
-            this.$refs.formData.resetFields()
         }
     }
 }

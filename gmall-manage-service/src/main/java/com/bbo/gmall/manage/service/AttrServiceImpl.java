@@ -1,4 +1,4 @@
-package com.bbo.gmall.manage.service.impl;
+package com.bbo.gmall.manage.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.bbo.gmall.bean.pms.PmsBaseAttrInfo;

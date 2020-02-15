@@ -2,7 +2,11 @@ package com.bbo.gmall.response;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Response {
+import java.io.Serializable;
+
+public class Response implements Serializable {
+
+    private static final long serialVersionUID = 8758925991641779659L;
 
     private boolean success = true;
 

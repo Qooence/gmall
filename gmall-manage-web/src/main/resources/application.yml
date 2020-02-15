@@ -18,4 +18,10 @@ dubbo:
   consumer:
     timeout: 600000
     check: false
+  qos:
+    enable: true
+    port: 33334
+    accept:
+      foreign:
+        ip: false
 

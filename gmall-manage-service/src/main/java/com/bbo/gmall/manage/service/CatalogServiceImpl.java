@@ -1,4 +1,4 @@
-package com.bbo.gmall.manage.service.impl;
+package com.bbo.gmall.manage.service;
 
 import com.bbo.gmall.bean.pms.PmsBaseCatalog1;
 import com.bbo.gmall.bean.pms.PmsBaseCatalog2;
