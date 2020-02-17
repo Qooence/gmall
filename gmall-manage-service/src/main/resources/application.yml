@@ -54,7 +54,8 @@ dubbo:
   protocol:
     name: dubbo
   registry:
-    address: 127.0.0.1:2181
+#    address: 127.0.0.1:2181
+    address: 192.168.45.180:2181
     protocol: zookeeper
   qos:
     enable: true

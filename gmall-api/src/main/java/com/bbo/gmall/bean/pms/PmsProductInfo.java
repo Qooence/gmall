@@ -30,4 +30,7 @@ public class PmsProductInfo implements Serializable {
 
     @Transient
     private List<PmsProductSaleAttr> productSaleAttrs;
+
+    @Transient
+    private List<PmsProductImage> productImages;
 }

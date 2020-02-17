@@ -1,10 +1,12 @@
 package com.bbo.gmall.manage.service;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.bbo.gmall.bean.pms.PmsProductImage;
 import com.bbo.gmall.bean.pms.PmsProductInfo;
 import com.bbo.gmall.bean.pms.PmsProductSaleAttr;
 import com.bbo.gmall.bean.pms.PmsProductSaleAttrValue;
 import com.bbo.gmall.manage.config.BaseServiceImpl;
+import com.bbo.gmall.manage.mapper.PmsProductImageMapper;
 import com.bbo.gmall.manage.mapper.PmsProductInfoMapper;
 import com.bbo.gmall.manage.mapper.PmsProductSaleAttrMapper;
 import com.bbo.gmall.manage.mapper.PmsProductSaleAttrValueMapper;
@@ -35,6 +37,9 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
 
     @Autowired
     PmsProductSaleAttrValueMapper pmsProductSaleAttrValueMapper;
+
+    @Autowired
+    PmsProductImageMapper pmsProductImageMapper;
 
     @Override
     public PageInfo<PmsProductInfo> productInfoList(Integer pageNum, Integer pageSize, String catalog3Id) {
@@ -111,6 +116,11 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
             info.setProductSaleAttrs(pmsProductSaleAttrs);
         }
 
+        PmsProductImage image = new PmsProductImage();
+        image.setProductId(info.getId());
+        List<PmsProductImage> images = pmsProductImageMapper.select(image);
+        info.setProductImages(images);
+
         return info;
     }
 
@@ -158,6 +168,13 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
         pmsProductSaleAttrValueMapper.deleteByExample(example);
     }
 
+    private void deleteProductImageByProductId(String productId){
+        Example example = new Example(PmsProductImage.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("productId",productId);
+        pmsProductImageMapper.deleteByExample(example);
+    }
+
     private void addAttrAndValue(PmsProductInfo pmsProductInfo,Boolean isUpdate,Boolean isDelete){
         List<PmsProductSaleAttr> saleAttrs = pmsProductInfo.getProductSaleAttrs();
         if(isUpdate || isDelete) deleteSaleAttrByProductId(pmsProductInfo.getId());
@@ -180,6 +197,14 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
                     }
                 }
             }
+        }
+
+        if(isUpdate || isDelete) deleteProductImageByProductId(pmsProductInfo.getId());
+        if (!isDelete && CollectionUtil.isNotEmpty(pmsProductInfo.getProductImages())) {
+            for (PmsProductImage productImage : pmsProductInfo.getProductImages()) {
+                productImage.setProductId(pmsProductInfo.getId());
+            }
+            pmsProductImageMapper.insertList(pmsProductInfo.getProductImages());
         }
     }
 }

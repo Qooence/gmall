@@ -14,4 +14,6 @@ public interface SkuInfoService extends BaseService<PmsSkuInfo> {
     PmsSkuInfo detail(String id);
 
     Response deletes(String[] ids);
+
+    PmsSkuInfo getSkuById(String skuId);
 }

@@ -27,9 +27,16 @@
             <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- springboot亲儿子thymeleaf -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- thymeleaf支持包、可以设置松校验、热部署 -->
+        <dependency>
+            <groupId>net.sourceforge.nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
         </dependency>
 
         <dependency>

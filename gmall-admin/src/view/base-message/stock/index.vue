@@ -32,7 +32,7 @@
                 </Row>
             </div>
             <div class="card-content-table">
-                <Table border ref="tables" :loading="loading" :columns="columns" :data="listData"></Table>
+                <Table border ref="tables" :loading="loading" :columns="columns" :data="listData" @on-selection-change="onChange"></Table>
             </div>
             <div class="card-content-pages">
                 <Page :total="totalCount" show-elevator show-total :page-size="searchParam.pageSize" @on-change='change' @on-page-size-change='change'></Page>
@@ -72,12 +72,13 @@ export default {
                     let row = params.row;
                     return (
                         <div>
-                            <Button type='warning' onClick={() => {}}>修改</Button>
+                            <Button type='warning' onClick={() => {this.toSave(row.id)}}>修改</Button>
                         </div>
                     )
                   }
                 }
-            ]
+            ],
+            selectArry: []
         }
     },
     computed: {
@@ -86,7 +87,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['getSkuList', 'saveProductInfo','productDetail']),
+        ...mapActions(['getSkuList', 'deleteSkuInfos']),
         init(id, productName, catalog3Id) {
             this.searchParam.productId = id
             this.searchParam.productName = productName
@@ -103,7 +104,9 @@ export default {
             this.initList()
         },
         initList(){
+            this.loading = true
             this.getSkuList(this.searchParam).then(res => {
+                this.loading = false
                 this.listData = res.data.list
                 this.totalCount = res.data.total
             })
@@ -111,8 +114,34 @@ export default {
         toSave(id){
             this.$refs.stockSave.init(id ? id : null, this.searchParam);
         },
+        onChange (value) {
+            this.selectArry = value
+        },
         deletes(){
-
+            if (this.selectArry.length > 0) {
+                this.$Modal.confirm({
+                title: '提示',
+                content: '确认进行删除操作吗？',
+                onOk: () => {
+                    this.deleteSkuInfos(this.selectArry.map(item => item.id)).then((res) => {
+                        this.initList()
+                        this.$Notice.success({
+                            title: '提示',
+                            desc: res.message
+                        })
+                    })
+                },
+                onCancel: () => {
+                    this.selectArry.length = 0
+                    this.$refs.selection.selectAll(false)
+                }
+                })
+            } else {
+                this.$Notice.warning({
+                title: '警告',
+                desc: '请至少选择一项'
+                })
+            }
         }
     }
 }

@@ -18,10 +18,13 @@ export default {
         let i = 0
         let col = []
         this.saleAttrList.forEach((item, index) => {
+            if(item.selectValue){
+                this.select['select' + item.id] = item.selectValue
+            }
             let ops = [] 
             if (item.saleAttrValues && item.saleAttrValues.length > 0) {
                 item.saleAttrValues.forEach(value => {
-                    ops.push(<Option tag={value.saleAttrId} value={value.id}>{value.saleAttrValueName}</Option>)
+                    ops.push(<Option value={value.saleAttrId + ',' + value.id}>{value.saleAttrValueName}</Option>)
                 })
             }
             if (parseInt(index/3) === i) {
@@ -32,14 +35,11 @@ export default {
                                 label-in-value placeholder={item.saleAttrName} 
                                 on-input={(value) => {this.select['select' + item.id] = value}}
                                 on-on-change={obj => {
-                                    if(obj){
-                                        this.select['select' + item.id] = [obj.tag,obj.value,obj.label].join()
-                                    }else{
-                                        delete this.select['select' + item.id]
-                                    }
                                     let arr = []
                                     for(let name in this.select){
-                                        arr.push(this.select[name])
+                                        if(this.select[name]){
+                                            arr.push(this.select[name])
+                                        }
                                     }
                                     this.$emit('getValue',arr)
                                 }

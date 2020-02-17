@@ -7,8 +7,8 @@
             <FormItem label="商品名称" :rules="{required: true, message:'商品名称不能为空', trigger: 'blur'}" prop='skuName'>
                <Input v-model="formData.skuName" placeholder="商品名称"></Input> 
             </FormItem>
-            <FormItem label="商品价格" :rules="{required: true, message:'商品价格不能为空', trigger: 'blur'}" prop='price'>
-               <Input v-model="formData.price" placeholder="库存名称"></Input> 
+            <FormItem label="商品价格" :rules="{required: true, validator: this.validatePrice, trigger: 'blur'}" prop='price'>
+               <Input v-model="formData.price" placeholder="商品价格"></Input> 
             </FormItem>
             <FormItem label="商品重量">
                <Input v-model="formData.weight" placeholder="商品重量"></Input> 
@@ -52,33 +52,48 @@ export default {
             columns:[
                 { title: '序号', width:80, type: 'index', align: 'center' },
                 { title: '图片', align: 'center', key: 'skuName', tooltip: true },
-                { title: '图片名称', width: 120, align: 'center', key: 'price', tooltip: true },
+                { title: '图片名称', width: 120, align: 'center', key: 'pictrue', tooltip: true },
                 { title: '操作', align: 'center', width: 120}
             ]
         }
     },
     methods: {
-        ...mapActions(['getAttrInfoList', 'getPmsProductSaleAttr','saveProductInfo', 'productDetail']),
+        ...mapActions(['getAttrInfoList', 'getPmsProductSaleAttr','saveSkuInfo', 'skuDetail']),
         init(id, { productId, productName, catalog3Id }) {
             this.formData.productName = productName
-            this.getBaseAttrLlist(catalog3Id)
-            this.getSaleAttrList(productId)
+            this.formData.productId = productId
+            this.formData.catalog3Id = catalog3Id
             if(id){
                 this.title = '修改'
-                this.productDetail(id).then(res =>{
-                    this.formData.id = res.data.id
-                    this.formData.productName = res.data.productName
-                    this.formData.description = res.data.description
-                    this.tableData = res.data.productSaleAttrs
+                this.skuDetail(id).then(res => {
+                    this.$set(this.formData, 'id', res.data.id)
+                    this.$set(this.formData, 'weight', res.data.weight)
+                    this.$set(this.formData, 'skuName', res.data.skuName)
+                    this.$set(this.formData, 'skuDesc', res.data.skuDesc)
+                    this.$set(this.formData, 'price', res.data.price)
+                    this.$set(this.formData, 'baseAttr', res.data.baseAttr)
+                    this.$set(this.formData, 'saleAttr', res.data.saleAttr)
                 })
             }else{
                 this.title = '新增'
             }
+            this.getBaseAttrLlist(catalog3Id)
+            this.getSaleAttrList(productId)
             this.value = true
         },
         getBaseAttrLlist(catalog3Id){
             this.getAttrInfoList({pageSize: 100, catalog3Id: catalog3Id}).then(res => {
                 if(res.data.list && res.data.list.length > 0){
+                    if (this.formData.baseAttr && this.formData.baseAttr.length > 0) {
+                        res.data.list.forEach(item => {
+                            this.formData.baseAttr.filter(base => {
+                                if(base.split(",")[0] == item.id){
+                                    item.selectValue = base
+                                }
+                            })
+                            
+                        })
+                    }
                     this.baseAttrList = res.data.list
                 }
             })
@@ -86,6 +101,15 @@ export default {
         getSaleAttrList(productId){
             this.getPmsProductSaleAttr(productId).then(res => {
                 if (res.data && res.data.length > 0) {
+                    if (this.formData.saleAttr && this.formData.saleAttr.length > 0) {
+                        res.data.forEach(item => {
+                            this.formData.saleAttr.filter(sale => {
+                                if(sale.split(",")[0] == item.id){
+                                    item.selectValue = sale
+                                }
+                            })
+                        })
+                    }
                     this.saleAttrList = res.data
                 }
             })
@@ -93,8 +117,7 @@ export default {
         handleSubmit() {
             this.$refs['formData'].validate((valid) => {
                 if (valid) {
-                    this.formData.productSaleAttrs = this.tableData
-                    this.saveProductInfo(this.formData).then(res => {
+                    this.saveSkuInfo(this.formData).then(res => {
                         this.handlerCancel()
                         this.$emit('refresh')
                         this.$Notice.success({
@@ -116,10 +139,22 @@ export default {
             this.$refs.formData.resetFields()
         },
         getBaseAttrValue(value){
-            console.log(value)
+            this.formData.baseAttr = value
         },
         getSaleAttrValue(value){
-            console.log(value)
+            this.formData.saleAttr = value
+        },
+        validatePrice(rule, value, callback){
+            if (value === '') {
+                callback(new Error('商品价格不能为空'));
+            } else {
+                value = Number(value)
+                if (typeof value === 'number' && !isNaN(value)) {
+                    callback();
+                } else {
+                    callback(new Error('商品价格必须是数字'));
+                }
+            }
         }
     }
 }

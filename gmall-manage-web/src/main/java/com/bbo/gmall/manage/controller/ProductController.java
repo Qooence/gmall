@@ -2,11 +2,14 @@ package com.bbo.gmall.manage.controller;
 
 import com.bbo.gmall.bean.pms.PmsProductInfo;
 import com.bbo.gmall.bean.pms.PmsProductSaleAttr;
+import com.bbo.gmall.manage.util.PmsUploadUtil;
 import com.bbo.gmall.response.Response;
 import com.bbo.gmall.service.pms.ProductInfoService;
 import com.github.pagehelper.PageInfo;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,7 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping("product")
 public class ProductController {
-
+    @Value("${img.product.host}")
+    private String host;
     @Reference
     ProductInfoService productInfoService;
 
@@ -47,5 +51,14 @@ public class ProductController {
     public Response getPmsProductSaleAttr(String productId){
         List<PmsProductSaleAttr> pmsProductSaleAttrs = productInfoService.getPmsProductSaleAttr(productId);
         return Response.success(pmsProductSaleAttrs);
+    }
+
+    @CrossOrigin
+    @RequestMapping("fileUpload")
+    public Response fileUpload(@RequestParam("file") MultipartFile multipartFile){
+        // 将图片或者音视频上传到分布式的文件存储系统
+        // 将图片的存储路径返回给页面
+        String imgUrl = PmsUploadUtil.uploadImage(host, multipartFile);
+        return Response.success("上传成功",imgUrl);
     }
 }

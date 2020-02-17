@@ -2,12 +2,11 @@ package com.bbo.gmall.bean.pms;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class PmsSkuInfo implements Serializable {
@@ -41,4 +40,10 @@ public class PmsSkuInfo implements Serializable {
 
     @Column
     private String skuDefaultImg;
+
+    @Transient
+    private List<String> baseAttr = new ArrayList<String>();
+
+    @Transient
+    private List<String> saleAttr = new ArrayList<String>();
 }
