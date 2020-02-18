@@ -30,3 +30,11 @@ export const deleteSkuInfos = (data) => {
         method: 'delete'
     })
 }
+
+export const productImageList = (productId) => {
+    return axios.request({
+        url: 'productImage/list',
+        params: {productId: productId},
+        method: 'get'
+    })
+}

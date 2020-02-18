@@ -8,7 +8,7 @@ export default {
         }
     },
     props: {
-        saleAttrList: {
+        attrList: {
             type: Array,
             default: () => []
         }
@@ -17,24 +17,19 @@ export default {
         let rows = []
         let i = 0
         let col = []
-        this.saleAttrList.forEach((item, index) => {
-            if(item.selectValue){
-                this.select['select' + item.id] = item.selectValue
-            }
+        this.attrList.forEach((item, index) => {
+            this.select['select' + item.id] = item.selectValue
             let ops = [] 
-            if (item.saleAttrValues && item.saleAttrValues.length > 0) {
-                item.saleAttrValues.forEach(value => {
-                    ops.push(<Option value={value.saleAttrId + ',' + value.id}>{value.saleAttrValueName}</Option>)
+            if (item.attrValueList && item.attrValueList.length > 0) {
+                item.attrValueList.forEach(value => {
+                    ops.push(<Option value={value.attrId + "," + value.id}>{value.valueName}</Option>)
                 })
             }
             if (parseInt(index/3) === i) {
                 col.push(
                     <Col span="8">
-                        <FormItem label={item.saleAttrName}>
-                            <Select clearable value={this.select['select' + item.id]}
-                                label-in-value placeholder={item.saleAttrName} 
-                                on-input={(value) => {this.select['select' + item.id] = value}}
-                                on-on-change={obj => {
+                        <FormItem label={item.attrName}>
+                            <Select clearable value={this.select['select' + item.id]} on-input={(value) => {this.select['select' + item.id] = value}} placeholder={item.attrName} label-in-value on-on-change={obj => {
                                     let arr = []
                                     for(let name in this.select){
                                         if(this.select[name]){

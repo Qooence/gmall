@@ -1,12 +1,10 @@
 package com.bbo.gmall.manage.service;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.bbo.gmall.bean.pms.PmsProductSaleAttrValue;
-import com.bbo.gmall.bean.pms.PmsSkuAttrValue;
-import com.bbo.gmall.bean.pms.PmsSkuInfo;
-import com.bbo.gmall.bean.pms.PmsSkuSaleAttrValue;
+import com.bbo.gmall.bean.pms.*;
 import com.bbo.gmall.manage.config.BaseServiceImpl;
 import com.bbo.gmall.manage.mapper.PmsSkuAttrValueMapper;
+import com.bbo.gmall.manage.mapper.PmsSkuImageMapper;
 import com.bbo.gmall.manage.mapper.PmsSkuInfoMapper;
 import com.bbo.gmall.manage.mapper.PmsSkuSaleAttrValueMapper;
 import com.bbo.gmall.response.Response;
@@ -35,6 +33,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
 
     @Autowired
     PmsSkuSaleAttrValueMapper saleAttrValueMapper;
+
+    @Autowired
+    PmsSkuImageMapper pmsSkuImageMapper;
 
     @Override
     public PageInfo<PmsSkuInfo> skuInfo(Integer pageNum, Integer pageSize, String productId) {
@@ -91,6 +92,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
                 skuInfo.getSaleAttr().add(saleAttr.getSaleAttrId() + "," + saleAttr.getSaleAttrValueId());
             }
         }
+
+        skuInfo.setSkuImages(getPmsSkuImagesBySkuId(skuInfo.getId()));
         return skuInfo;
     }
 
@@ -110,7 +113,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
         PmsSkuInfo info = skuInfoMapper.selectByPrimaryKey(skuId);
 
         // sku的图片集合
-
+        info.setSkuImages(getPmsSkuImagesBySkuId(skuId));
         return info;
     }
 
@@ -147,6 +150,17 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
             }
             saleAttrValueMapper.insertList(skuSaleAttrValues);
         }
+
+        // 4、保存图片信息
+        if(isUpdate || isDelete) deleteSkuImageBySkuId(info.getId());
+        List<PmsSkuImage> skuImageList = info.getSkuImages();
+        if(CollectionUtil.isNotEmpty(skuImageList) && !isDelete){
+            for (PmsSkuImage skuImage : skuImageList) {
+                skuImage.setSkuId(info.getId());
+                skuImage.setIsDefault(skuImage.getIsDefault() == null ? "0" : skuImage.getIsDefault());
+            }
+            pmsSkuImageMapper.insertList(skuImageList);
+        }
     }
 
     private void deleteBaseAttrValueBySkuId(String skuId){
@@ -161,6 +175,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("skuId",skuId);
         saleAttrValueMapper.deleteByExample(example);
+    }
+
+    private void deleteSkuImageBySkuId(String skuId){
+        Example example = new Example(PmsSkuImage.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("skuId",skuId);
+        pmsSkuImageMapper.deleteByExample(example);
+    }
+
+    private List<PmsSkuImage> getPmsSkuImagesBySkuId(String skuId){
+        PmsSkuImage image = new PmsSkuImage();
+        image.setSkuId(skuId);
+        return pmsSkuImageMapper.select(image);
     }
 
 }
