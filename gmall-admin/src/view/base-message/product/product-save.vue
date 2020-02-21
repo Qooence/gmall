@@ -1,5 +1,5 @@
 <template>
-    <Modal :title="title" v-model="value" @on-cancel="handlerCancel" width="1024">
+    <Modal :title="title" v-model="value" @on-cancel="handlerCancel" :width="width" :styles="{top: '50px'}">
         <Form ref="formData" :model="formData" :label-width="80">
             <Row>
                 <Col span="8">
@@ -85,6 +85,11 @@ export default {
     components: {
         addTag
     },
+    computed: {
+        width (){
+            return document.body.clientWidth - 100
+        }
+    },
     data() {
         return {
             value: false,
@@ -111,34 +116,26 @@ export default {
                 { title: '销售属性值', width: 500, align: 'center',
                     render: (h, params) => {
                         let row = params.row
-                        let components = []
-                        if (row.saleAttrValues && row.saleAttrValues.length > 0) {
-                            row.saleAttrValues.forEach(item => {
-                                if(!item.saleAttrValueName) return
-                                components.push(<Tag closable name={item.saleAttrValueName} on-on-close={(event, name) => {
-                                        let newTag = row.saleAttrValues.filter((item) => (item.saleAttrValueName && item.saleAttrValueName !== name))
-                                        this.$set(this.tableData[params.index], 'saleAttrValues', newTag)
-                                    }
+                        return <addTag params={params} attrValueList={row.saleAttrValues ? row.saleAttrValues : []} addCellingId={this.addingTagCellId} 
+                            on-on-start-add={() => {this.addingTagCellId = `adding-${params.index}-${params.column.key}`}} 
+                            on-on-save-add={(value)=>{
+                                    this.tableData[params.index].saleAttrValues.push(
+                                        {
+                                            saleAttrId: '', 
+                                            saleAttrValueName: value
+                                        }
+                                    )
+                                    this.addingTagCellId = ''
                                 }
-                                >{item.saleAttrValueName}</Tag>)
-                            })
-                        }
-                        components.push(<addTag params={params} addCellingId={this.addingTagCellId} 
-                                            on-on-start-add={() => {this.addingTagCellId = `adding-${params.index}-${params.column.key}`}} 
-                                            on-on-save-add={(value)=>{
-                                                    this.tableData[params.index].saleAttrValues.push(
-                                                        {
-                                                            saleAttrId: '', 
-                                                            saleAttrValueName: value
-                                                        }
-                                                    )
-                                                    this.addingTagCellId = ''
-                                                }
-                                            }
-                                            on-on-cancel-add={() => {this.addingTagCellId = ''}}
+                            }
+                            on-on-cancel-add={() => {this.addingTagCellId = ''}}
+                            on-on-close={(index) => {
+                                this.tableData[params.index].saleAttrValues.splice(index,1)
+                            }}
+                            on-on-save-edit={(index,value) => {
+                                this.tableData[params.index].saleAttrValues[index] = value
+                            }}
                             ></addTag>
-                        )
-                        return components
                     }
                 },
                 {

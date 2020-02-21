@@ -19,4 +19,6 @@ public interface ProductInfoService extends BaseService<PmsProductInfo> {
     Response deletes(String[] ids);
 
     List<PmsProductSaleAttr> getPmsProductSaleAttr(String productId);
+
+    List<PmsProductSaleAttr> spuSaleAttrListCheckBySku(String productId,String skuId);
 }

@@ -2,10 +2,7 @@ package com.bbo.gmall.bean.pms;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
@@ -26,5 +23,8 @@ public class PmsProductSaleAttrValue implements Serializable {
 
     @Column
     private String saleAttrValueName;
+
+    @Transient
+    private String isChecked;
 
 }

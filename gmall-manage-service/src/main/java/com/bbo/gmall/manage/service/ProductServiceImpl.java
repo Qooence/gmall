@@ -1,15 +1,13 @@
 package com.bbo.gmall.manage.service;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.bbo.gmall.bean.pms.PmsProductImage;
-import com.bbo.gmall.bean.pms.PmsProductInfo;
-import com.bbo.gmall.bean.pms.PmsProductSaleAttr;
-import com.bbo.gmall.bean.pms.PmsProductSaleAttrValue;
+import com.bbo.gmall.bean.pms.*;
 import com.bbo.gmall.manage.config.BaseServiceImpl;
 import com.bbo.gmall.manage.mapper.PmsProductImageMapper;
 import com.bbo.gmall.manage.mapper.PmsProductInfoMapper;
 import com.bbo.gmall.manage.mapper.PmsProductSaleAttrMapper;
 import com.bbo.gmall.manage.mapper.PmsProductSaleAttrValueMapper;
+import com.bbo.gmall.manage.util.CompareListBeanUtil;
 import com.bbo.gmall.response.Response;
 import com.bbo.gmall.service.pms.ProductInfoService;
 import com.github.pagehelper.PageHelper;
@@ -20,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,13 +81,78 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
             // 1、保存spu基本信息
             pmsProductInfoMapper.insertSelective(pmsProductInfo);
             // 2、保存销售属性
-            addAttrAndValue(pmsProductInfo,false,false);
+            addAttrAndValue(pmsProductInfo,false);
             return Response.success("新增成功");
         }else{ // 修改
             // 1、修改spu基本信息
             pmsProductInfoMapper.updateByPrimaryKey(pmsProductInfo);
-            // 2、修改销售属性
-            addAttrAndValue(pmsProductInfo,true,false);
+            Set<String> productIds = new HashSet<String>(){{add(pmsProductInfo.getId());}};
+
+            // 2、修改销售属性 && 修改销售属性值
+            List<PmsProductSaleAttr> pSaleAttrs = pmsProductSaleAttrMapper.findByProductIds(productIds);
+            Map<String,List<PmsProductSaleAttr>> attrMap =  CompareListBeanUtil.compare(pSaleAttrs,pmsProductInfo.getProductSaleAttrs(),"saleAttrId");
+            List<PmsProductSaleAttr> attrInsert =  attrMap.get("insert");
+            List<PmsProductSaleAttr> attrUpdate =  attrMap.get("update");
+            List<PmsProductSaleAttr> attrDelete =  attrMap.get("delete");
+            if(attrInsert.size() > 0) {
+                attrInsert.parallelStream().filter(item -> {
+                    item.setProductId(pmsProductInfo.getId());
+                    // 新增相应的销售属性值
+                    if(CollectionUtil.isNotEmpty(item.getSaleAttrValues())){
+                        for(PmsProductSaleAttrValue saleAttrValue : item.getSaleAttrValues()) {
+                            saleAttrValue.setProductId(pmsProductInfo.getId());
+                            saleAttrValue.setSaleAttrId(item.getId());
+                        }
+                        pmsProductSaleAttrValueMapper.insertList(item.getSaleAttrValues());
+                    }
+                    return true;
+                }).collect(Collectors.toList());
+                pmsProductSaleAttrMapper.insertList(attrInsert);
+            }
+            if(attrUpdate.size() > 0) {
+                for (PmsProductSaleAttr attr : attrUpdate) {
+                    // 修改销售属性
+                    pmsProductSaleAttrMapper.updateByPrimaryKey(attr);
+
+                    // 修改销售属性对应的属性值
+                    List<PmsProductSaleAttrValue> dbList = pmsProductSaleAttrValueMapper.findByAttrIds(new ArrayList<String>(){{add(attr.getId());}});
+                    Map<String,List<PmsProductSaleAttrValue>> valueMap = CompareListBeanUtil.compare(dbList,attr.getSaleAttrValues(),"saleAttrValueName");
+                    List<PmsProductSaleAttrValue> valueInsert =  valueMap.get("insert");
+                    List<PmsProductSaleAttrValue> valueUpdate =  valueMap.get("update");
+                    List<PmsProductSaleAttrValue> valueDelete =  valueMap.get("delete");
+                    if(valueInsert.size()> 0) {
+                        valueInsert.parallelStream().filter(value -> {
+                            value.setProductId(pmsProductInfo.getId());
+                            value.setSaleAttrId(attr.getId());
+                            return true;
+                        }).collect(Collectors.toList());
+                        pmsProductSaleAttrValueMapper.insertList(valueInsert);
+                    }
+                    if(valueUpdate.size()> 0) {
+                        for (PmsProductSaleAttrValue attrValue : valueUpdate) {
+                            pmsProductSaleAttrValueMapper.updateByPrimaryKey(attrValue);
+                        }
+                    }
+                    if(valueDelete.size()> 0) {
+                        List<String> ids = valueDelete.parallelStream().map(PmsProductSaleAttrValue:: getId).collect(Collectors.toList());
+                        pmsProductSaleAttrValueMapper.deleteByIds(StringUtils.join(ids,","));
+                    }
+                }
+            }
+
+            if(attrDelete.size() > 0) {
+                // 删除操作
+                List<String> ids = attrDelete.parallelStream().map(item -> {
+                    if(CollectionUtil.isNotEmpty(item.getSaleAttrValues())){
+                        List<String> valueIds = item.getSaleAttrValues().parallelStream().map(PmsProductSaleAttrValue::getId).collect(Collectors.toList());
+                        pmsProductSaleAttrValueMapper.deleteByIds(StringUtils.join(valueIds,","));
+                    }
+                    return item.getId();
+                }).collect(Collectors.toList());
+                pmsProductSaleAttrMapper.deleteByIds(StringUtils.join(ids,","));
+
+            }
+
             return Response.success("修改成功");
         }
     }
@@ -128,7 +189,7 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
     @Transactional
     public Response deletes(String[] ids) {
         for (String id : ids) {
-            addAttrAndValue(detail(id),false,true);
+            addAttrAndValue(detail(id),true);
             pmsProductInfoMapper.deleteByPrimaryKey(id);
         }
         return Response.success("删除成功");
@@ -154,6 +215,12 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
         return pmsProductSaleAttrs;
     }
 
+    @Override
+    public List<PmsProductSaleAttr> spuSaleAttrListCheckBySku(String productId,String skuId) {
+        List<PmsProductSaleAttr> pmsProductSaleAttrs = pmsProductSaleAttrMapper.selectSpuSaleAttrListCheckBySku(productId,skuId);
+        return pmsProductSaleAttrs;
+    }
+
     private void deleteSaleAttrByProductId(String productId){
         Example example = new Example(PmsProductSaleAttr.class);
         Example.Criteria criteria = example.createCriteria();
@@ -175,9 +242,9 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
         pmsProductImageMapper.deleteByExample(example);
     }
 
-    private void addAttrAndValue(PmsProductInfo pmsProductInfo,Boolean isUpdate,Boolean isDelete){
+    private void addAttrAndValue(PmsProductInfo pmsProductInfo,Boolean isDelete){
         List<PmsProductSaleAttr> saleAttrs = pmsProductInfo.getProductSaleAttrs();
-        if(isUpdate || isDelete) deleteSaleAttrByProductId(pmsProductInfo.getId());
+        if(isDelete) deleteSaleAttrByProductId(pmsProductInfo.getId());
         if(CollectionUtil.isNotEmpty(saleAttrs)){
             for (PmsProductSaleAttr saleAttr : saleAttrs){
                 if(!isDelete){
@@ -185,7 +252,7 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
                     pmsProductSaleAttrMapper.insertSelective(saleAttr);
                 }
                 // 3、保存销售属性值
-                if(isUpdate || isDelete) deleteSaleAttrValueByAttrId(saleAttr.getId());
+                if(isDelete) deleteSaleAttrValueByAttrId(saleAttr.getId());
                 if(!isDelete){
                     List<PmsProductSaleAttrValue> saleAttrValues = saleAttr.getSaleAttrValues();
                     if(CollectionUtil.isNotEmpty(saleAttrValues)){
@@ -199,7 +266,7 @@ public class ProductServiceImpl extends BaseServiceImpl<PmsProductInfo> implemen
             }
         }
 
-        if(isUpdate || isDelete) deleteProductImageByProductId(pmsProductInfo.getId());
+        if(isDelete) deleteProductImageByProductId(pmsProductInfo.getId());
         if (!isDelete && CollectionUtil.isNotEmpty(pmsProductInfo.getProductImages())) {
             for (PmsProductImage productImage : pmsProductInfo.getProductImages()) {
                 productImage.setProductId(pmsProductInfo.getId());

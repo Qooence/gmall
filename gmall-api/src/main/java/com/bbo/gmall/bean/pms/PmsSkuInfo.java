@@ -48,5 +48,11 @@ public class PmsSkuInfo implements Serializable {
     private List<String> saleAttr = new ArrayList<String>();
 
     @Transient
-    private List<PmsSkuImage> skuImages = new ArrayList<PmsSkuImage>();
+    private List<PmsSkuImage> skuImages;
+
+    @Transient
+    List<PmsSkuAttrValue> skuAttrValueList;
+
+    @Transient
+    List<PmsSkuSaleAttrValue> skuSaleAttrValueList;
 }

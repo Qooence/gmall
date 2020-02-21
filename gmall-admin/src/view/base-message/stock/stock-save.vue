@@ -16,8 +16,8 @@
             <FormItem label="商品描述" :rules="{required: true, message:'商品描述不能为空', trigger: 'blur'}" prop='skuDesc'>
                <Input type="textarea" :rows="4" v-model="formData.skuDesc" placeholder="商品描述"></Input> 
             </FormItem>
-            <attr-select :attrList="baseAttrList" @getValue="getBaseAttrValue"></attr-select>
-            <sale-attr-select :saleAttrList="saleAttrList" @getValue="getSaleAttrValue"></sale-attr-select>
+            <attr-select ref="attrSelect" :attrList="baseAttrList" @getValue="getBaseAttrValue"></attr-select>
+            <sale-attr-select ref="saleAttrSelect" :saleAttrList="saleAttrList" @getValue="getSaleAttrValue"></sale-attr-select>
             <Table border ref="imgTables" :columns="columns" :data="imgList" @on-selection-change="onChange"></Table>
         </Form>
         <div slot="footer">
@@ -97,8 +97,6 @@ export default {
                     }
                 },
                 { title: '图片名称', align: 'center', key: 'imgName', tooltip: true },
-                { title: '图片名称', align: 'center', key: 'id', tooltip: true },
-                { title: '图片名称', align: 'center', key: 'productIm', tooltip: true },
                 { type: 'selection', align: 'center'},
                 { title: '操作', align: 'center',
                     render: (h, params) => {
@@ -107,18 +105,6 @@ export default {
                         if(skuDefaultImg && skuDefaultImg === params.row.imgUrl){
                             this.changeDefault = `changing-${params.index}-${params.column.__id}`
                         }
-                        // 回显勾选
-                        // if(this.updateReturnSkuImages && this.updateReturnSkuImages.length > 0){
-                        //     let rows = []
-                        //     this.updateReturnSkuImages.forEach(item => {
-                        //         if(item.productImgId == params.row.id){
-                        //             rows.push(params.row)
-                        //             this.$refs.imgTables.objData[params.index]._isChecked = true
-                        //         }
-                        //     })
-                        //     this.selectArry = rows
-                        // }
-
                         return (<defaultButton params={params} changeDefault={this.changeDefault} 
                                 on-set-default={() => {
                                     this.changeDefault = `changing-${params.index}-${params.column.__id}`
@@ -184,35 +170,38 @@ export default {
         },
         getBaseAttrLlist(catalog3Id){
             this.getAttrInfoList({pageSize: 100, catalog3Id: catalog3Id}).then(res => {
-                if(res.data.list && res.data.list.length > 0){
-                    if (this.formData.baseAttr && this.formData.baseAttr.length > 0) {
-                        res.data.list.forEach(item => {
-                            this.formData.baseAttr.filter(base => {
-                                if(base.split(",")[0] == item.id){
-                                    item.selectValue = base
-                                }
+                setTimeout((()=>{
+                    if(res.data.list && res.data.list.length > 0){
+                        if (this.formData.baseAttr && this.formData.baseAttr.length > 0) {
+                            res.data.list.forEach(item => {
+                                this.formData.baseAttr.filter(base => {
+                                    if(base.split(",")[0] == item.id){
+                                        item.selectValue = base
+                                    }
+                                })
                             })
-                            
-                        })
+                        }
+                        this.baseAttrList = res.data.list
                     }
-                    this.baseAttrList = res.data.list
-                }
+                }),200) // 等待200ms 目的:等待数据加载完成
             })
         },
         getSaleAttrList(productId){
             this.getPmsProductSaleAttr(productId).then(res => {
-                if (res.data && res.data.length > 0) {
-                    if (this.formData.saleAttr && this.formData.saleAttr.length > 0) {
-                        res.data.forEach(item => {
-                            this.formData.saleAttr.filter(sale => {
-                                if(sale.split(",")[0] == item.id){
-                                    item.selectValue = sale
-                                }
+                setTimeout((()=>{
+                    if (res.data && res.data.length > 0) {
+                        if (this.formData.saleAttr && this.formData.saleAttr.length > 0) {
+                            res.data.forEach(item => {
+                                this.formData.saleAttr.filter(sale => {
+                                    if(sale.split(",")[0] == item.id){
+                                        item.selectValue = sale
+                                    }
+                                })
                             })
-                        })
+                        }
+                        this.saleAttrList = res.data
                     }
-                    this.saleAttrList = res.data
-                }
+                }),200) // 等待200ms 目的:等待数据加载完成
             })
         },
         getProductImageList(productId){
@@ -255,6 +244,8 @@ export default {
             this.value = false
             this.formData = {}
             this.$refs.imgTables.selectAll(false)
+            this.baseAttrList = []
+            this.saleAttrList = []
             this.selectArry = []
             this.changeDefault = ''
             this.$refs.formData.resetFields()

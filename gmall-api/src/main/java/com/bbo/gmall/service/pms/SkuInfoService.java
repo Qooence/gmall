@@ -5,6 +5,8 @@ import com.bbo.gmall.bean.pms.PmsSkuInfo;
 import com.bbo.gmall.response.Response;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 public interface SkuInfoService extends BaseService<PmsSkuInfo> {
 
     PageInfo<PmsSkuInfo> skuInfo(Integer pageNum, Integer pageSize, String productId);
@@ -16,4 +18,8 @@ public interface SkuInfoService extends BaseService<PmsSkuInfo> {
     Response deletes(String[] ids);
 
     PmsSkuInfo getSkuById(String skuId);
+
+    List<PmsSkuInfo> getSkuSaleAttrValueListBySpu(String productId);
+
+
 }

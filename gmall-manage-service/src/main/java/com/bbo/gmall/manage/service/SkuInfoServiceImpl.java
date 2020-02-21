@@ -117,9 +117,18 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
         return info;
     }
 
+    @Override
+    public List<PmsSkuInfo> getSkuSaleAttrValueListBySpu(String productId) {
+
+        List<PmsSkuInfo> pmsSkuInfos = skuInfoMapper.selectSkuSaleAttrValueListBySpu(productId);
+
+        return pmsSkuInfos;
+    }
+
 
     private void insertAndDelete(PmsSkuInfo info,Boolean isUpdate,Boolean isDelete){
-        // 2、保存baseAttrValue
+
+        // 2、保存pms_sku_attr_value 平台属性的值
         if(isUpdate || isDelete) deleteBaseAttrValueBySkuId(info.getId());
         List<String> baseAttrs = info.getBaseAttr();
         if (CollectionUtil.isNotEmpty(baseAttrs) && !isDelete) {
@@ -135,7 +144,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
             attrValueMapper.insertList(skuAttrValues);
         }
 
-        // 3、保存saleAttrValue
+        // 3、保存pms_sku_sale_attr_value 库存单元（单件商品）的销售属性的值
         if(isUpdate || isDelete) deleteSaleAttrValueBySkuId(info.getId());
         List<String> saleAttrs = info.getSaleAttr();
         if (CollectionUtil.isNotEmpty(saleAttrs) && !isDelete) {
@@ -151,7 +160,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
             saleAttrValueMapper.insertList(skuSaleAttrValues);
         }
 
-        // 4、保存图片信息
+        // 4、保存pms_sku_info 库存单元（单件商品）的图片信息
         if(isUpdate || isDelete) deleteSkuImageBySkuId(info.getId());
         List<PmsSkuImage> skuImageList = info.getSkuImages();
         if(CollectionUtil.isNotEmpty(skuImageList) && !isDelete){

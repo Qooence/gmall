@@ -56,8 +56,10 @@ export default {
                         let arr = res.data.attrValueList
                         for(let i = 0; i < arr.length; i++){
                             this.formData.attrValueList.push({
+                                id: arr[i].id,
+                                attrId: arr[i].attrId,
+                                isEnabled: arr[i].isEnabled,
                                 valueName: arr[i].valueName,
-                                index: i
                             })
                         }
                     }
@@ -68,10 +70,8 @@ export default {
             this.value = true
         },
         handleAdd() {
-            this.index++
             this.formData.attrValueList.push({
                 valueName: '',
-                index: this.index
             })
         },
         handleRemove(index) {

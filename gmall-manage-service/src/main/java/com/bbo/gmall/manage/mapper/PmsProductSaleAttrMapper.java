@@ -10,4 +10,6 @@ public interface PmsProductSaleAttrMapper extends BaseMapper<PmsProductSaleAttr>
 
     List<PmsProductSaleAttr> findByProductIds(@Param("productIds") Collection<String> productIds);
 
+    List<PmsProductSaleAttr> selectSpuSaleAttrListCheckBySku(@Param("productId") String productId, @Param("skuId") String skuId);
+
 }
