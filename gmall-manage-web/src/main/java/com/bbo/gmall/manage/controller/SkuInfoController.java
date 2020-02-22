@@ -1,8 +1,8 @@
 package com.bbo.gmall.manage.controller;
 
-import com.bbo.gmall.bean.pms.PmsSkuInfo;
-import com.bbo.gmall.response.Response;
-import com.bbo.gmall.service.pms.SkuInfoService;
+import com.bbo.gmall.manage.bean.pms.PmsSkuInfo;
+import com.bbo.gmall.manage.response.Response;
+import com.bbo.gmall.manage.service.pms.SkuInfoService;
 import com.github.pagehelper.PageInfo;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ public class SkuInfoController {
 
     @RequestMapping("list")
     public Response productInfoList(@RequestParam(defaultValue = "1")Integer pageNum,
-                                 @RequestParam(defaultValue = "10")Integer pageSize,String productId){
+                                    @RequestParam(defaultValue = "10")Integer pageSize, String productId){
 
         PageInfo<PmsSkuInfo> pageInfo = skuInfoService.skuInfo(pageNum,pageSize,productId);
 

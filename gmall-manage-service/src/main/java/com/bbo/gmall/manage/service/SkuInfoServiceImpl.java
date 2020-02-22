@@ -1,25 +1,31 @@
 package com.bbo.gmall.manage.service;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.bbo.gmall.bean.pms.*;
+import com.alibaba.fastjson.JSON;
 import com.bbo.gmall.manage.config.BaseServiceImpl;
-import com.bbo.gmall.manage.mapper.PmsSkuAttrValueMapper;
+import com.bbo.gmall.manage.bean.pms.PmsSkuAttrValue;
+import com.bbo.gmall.manage.bean.pms.PmsSkuImage;
+import com.bbo.gmall.manage.bean.pms.PmsSkuInfo;
+import com.bbo.gmall.manage.bean.pms.PmsSkuSaleAttrValue;
 import com.bbo.gmall.manage.mapper.PmsSkuImageMapper;
-import com.bbo.gmall.manage.mapper.PmsSkuInfoMapper;
 import com.bbo.gmall.manage.mapper.PmsSkuSaleAttrValueMapper;
-import com.bbo.gmall.response.Response;
-import com.bbo.gmall.service.pms.SkuInfoService;
+import com.bbo.gmall.manage.response.Response;
+import com.bbo.gmall.manage.service.pms.SkuInfoService;
+import com.bbo.gmall.manage.mapper.PmsSkuAttrValueMapper;
+import com.bbo.gmall.manage.mapper.PmsSkuInfoMapper;
+import com.bbo.gmall.util.RedisUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.annotations.JsonAdapter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ThreadUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.Jedis;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,6 +42,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
 
     @Autowired
     PmsSkuImageMapper pmsSkuImageMapper;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public PageInfo<PmsSkuInfo> skuInfo(Integer pageNum, Integer pageSize, String productId) {
@@ -109,6 +118,111 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
 
     @Override
     public PmsSkuInfo getSkuById(String skuId){
+
+        PmsSkuInfo info = new PmsSkuInfo();
+        Jedis jedis = null;
+        try {
+            // 连接缓存
+            jedis = redisUtil.getJedis();
+            // 查询缓存
+            String skyKey = "sku:" + skuId + ":info";
+            String skuJson = jedis.get(skyKey);
+            if(StringUtils.isNotBlank(skuJson)){
+                info = JSON.parseObject(skuJson,PmsSkuInfo.class);
+            }else {
+                // 如果缓存中没有，查询mySql
+                info = getSkuByIdFromDb(skuId);
+                // 查询结果存入redis
+                if(info != null){
+                    jedis.set("sku:" + skuId + ":info",JSON.toJSONString(info));
+                }else{
+                    // 数据库中不存在该sku
+                    // 为了防止缓存穿透，将null或者空字符串存入redis中
+                    jedis.setex("sku:" + skuId + ":info",3*60, "");
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            jedis.close();
+        }
+        return info;
+    }
+
+    /**
+     * 加入redis自带分布式锁 防止缓存击穿
+     * @param skuId
+     * @param ip
+     * @return
+     */
+    @Override
+    public PmsSkuInfo getSkuById(String skuId, String ip){
+        System.out.println("ip==>  "+ip+"的同学,Thread==>  "+Thread.currentThread().getName()+"进入的商品详情的请求");
+        PmsSkuInfo info = new PmsSkuInfo();
+        Jedis jedis = null;
+        try {
+            // 连接缓存
+            jedis = redisUtil.getJedis();
+            // 查询缓存
+            String skuKey = "sku:" + skuId + ":info";
+            String skuJson = jedis.get(skuKey);
+            if(StringUtils.isNotBlank(skuJson)){
+                System.out.println("ip==>  "+ip+"的同学,Thread==>  "+Thread.currentThread().getName()+"从缓存中获取到商品详情信息");
+                info = JSON.parseObject(skuJson,PmsSkuInfo.class);
+            }else {
+                String lock = "sku:" + skuId + ":lock";
+                System.out.println("ip==>  "+ip+"的同学,Thread==>  "+Thread.currentThread().getName()+"发现缓存中没有，申请缓存的分布式锁：" + lock);
+
+                // 分布式锁的value,设置唯一值，做唯一值判断，防止在归还锁之前缓存过期导致删除了其他线程的锁
+                String token = UUID.randomUUID().toString();
+
+                // 设置分布式锁
+                String OK = jedis.set(lock,token,"nx","px",10*1000);
+
+                if(StringUtils.isNotBlank(OK) && OK.equals("OK")){
+                    // 设置成功，有权在10秒的过期时间内访问数据库
+                    System.out.println("ip==>  "+ip+"的同学,Thread==>  "+Thread.currentThread().getName() +  "有权在10秒的过期时间内访问数据库:" + lock);
+                    // 如果缓存中没有，查询mySql
+                    info = getSkuByIdFromDb(skuId);
+
+                    if(info != null){
+                        // 查询结果存入redis
+//                        Thread.sleep(3*1000);//测试使用加入的
+                        System.out.println("ip==>  "+ip+"的同学,Thread==>  "+Thread.currentThread().getName() +"睡眠结束,开始讲数据加入缓存");
+                        jedis.set("sku:" + skuId + ":info",JSON.toJSONString(info));
+                    }else{
+                        // 数据库中不存在该sku
+                        // 为了防止缓存穿透，将null或者空字符串存入redis中
+                        jedis.setex("sku:" + skuId + ":info",3*60, JSON.toJSONString(""));
+                    }
+
+                    // 在访问mysql后，将mysql的分布锁释放
+                    System.out.println("ip==>  "+ip+"的同学,Thread==>  " + Thread.currentThread().getName()+"使用完毕，将锁归还："+lock);
+                    String lockToken = jedis.get("sku:" + skuId + ":lock");
+                    if(StringUtils.isNotBlank(lockToken)&&lockToken.equals(token)){
+                        jedis.del("sku:" + skuId + ":lock");// 用token确认删除的是自己的sku的锁
+                    }
+
+                    // 假设在做分布式锁value唯一值判断时，分布式锁过期失效，删除锁时就会删除其他线程的锁，这个问题这么处理
+                    // 可利用lua脚本，在查询到key的同时删除该key，防止高并发下的意外的发生
+                    // String script ="if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+                    // jedis.eval(script, Collections.singletonList(lock),Collections.singletonList(token));
+
+                }else{
+                    System.out.println("ip==>  "+ip+"的同学,Thread==>  " + Thread.currentThread().getName() + "的同学没有获取到锁,开始自旋");
+                    Thread.sleep(1*1000);
+                    return getSkuById(skuId,ip);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            jedis.close();
+        }
+        return info;
+    }
+
+    public PmsSkuInfo getSkuByIdFromDb(String skuId){
         // sku信息
         PmsSkuInfo info = skuInfoMapper.selectByPrimaryKey(skuId);
 

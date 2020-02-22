@@ -4,9 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bbo.gmall.manage.mapper.PmsSkuInfoMapper">
 
-    <resultMap id="selectSkuSaleAttrValueListBySpuMap" type="com.bbo.gmall.bean.pms.PmsSkuInfo" autoMapping="true">
+    <resultMap id="selectSkuSaleAttrValueListBySpuMap" type="com.bbo.gmall.manage.bean.pms.PmsSkuInfo" autoMapping="true">
         <result column="si_id" property="id"></result>
-        <collection property="skuSaleAttrValueList" ofType="com.bbo.gmall.bean.pms.PmsSkuSaleAttrValue" autoMapping="true">
+        <collection property="skuSaleAttrValueList" ofType="com.bbo.gmall.manage.bean.pms.PmsSkuSaleAttrValue" autoMapping="true">
             <result column="ssav_id" property="id"></result>
         </collection>
     </resultMap>

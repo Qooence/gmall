@@ -1,7 +1,7 @@
 package com.bbo.gmall.manage.util;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.bbo.gmall.bean.pms.PmsBaseAttrValue;
+import com.bbo.gmall.manage.bean.pms.PmsBaseAttrValue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

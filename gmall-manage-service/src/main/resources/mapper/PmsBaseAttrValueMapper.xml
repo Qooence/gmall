@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bbo.gmall.manage.mapper.PmsBaseAttrValueMapper">
 
-    <select id="findByAttrId" resultType="com.bbo.gmall.bean.pms.PmsBaseAttrValue">
+    <select id="findByAttrId" resultType="com.bbo.gmall.manage.bean.pms.PmsBaseAttrValue">
         SELECT * FROM pms_base_attr_value WHERE attr_id = #{attrId}
     </select>
 
-    <select id="findByAttrIds" resultType="com.bbo.gmall.bean.pms.PmsBaseAttrValue">
+    <select id="findByAttrIds" resultType="com.bbo.gmall.manage.bean.pms.PmsBaseAttrValue">
         SELECT * FROM pms_base_attr_value
         <where>
             <if test="attrIds != null and attrIds.size() > 0">

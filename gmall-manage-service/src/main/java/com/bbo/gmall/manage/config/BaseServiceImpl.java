@@ -1,6 +1,6 @@
 package com.bbo.gmall.manage.config;
 
-import com.bbo.gmall.base.BaseService;
+import com.bbo.gmall.manage.base.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
 

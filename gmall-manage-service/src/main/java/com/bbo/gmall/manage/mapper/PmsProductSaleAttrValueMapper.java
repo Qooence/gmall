@@ -1,5 +1,5 @@
 package com.bbo.gmall.manage.mapper;
-import com.bbo.gmall.bean.pms.PmsProductSaleAttrValue;
+import com.bbo.gmall.manage.bean.pms.PmsProductSaleAttrValue;
 import com.bbo.gmall.manage.config.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 

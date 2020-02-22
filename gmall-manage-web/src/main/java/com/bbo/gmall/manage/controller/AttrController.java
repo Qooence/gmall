@@ -1,9 +1,9 @@
 package com.bbo.gmall.manage.controller;
 
-import com.bbo.gmall.bean.pms.PmsBaseAttrInfo;
-import com.bbo.gmall.response.Response;
-import com.bbo.gmall.response.ResponseCode;
-import com.bbo.gmall.service.pms.AttrService;
+import com.bbo.gmall.manage.bean.pms.PmsBaseAttrInfo;
+import com.bbo.gmall.manage.service.pms.AttrService;
+import com.bbo.gmall.manage.response.Response;
+import com.bbo.gmall.manage.response.ResponseCode;
 import com.github.pagehelper.PageInfo;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;

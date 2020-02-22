@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bbo.gmall.manage.mapper.PmsProductSaleAttrMapper">
 
-    <resultMap id="selectSpuSaleAttrListCheckBySkuMap" type="com.bbo.gmall.bean.pms.PmsProductSaleAttr" autoMapping="true">
+    <resultMap id="selectSpuSaleAttrListCheckBySkuMap" type="com.bbo.gmall.manage.bean.pms.PmsProductSaleAttr" autoMapping="true">
         <result column="sa_id" property="id"></result>
-        <collection property="saleAttrValues" ofType="com.bbo.gmall.bean.pms.PmsProductSaleAttrValue" autoMapping="true">
+        <collection property="saleAttrValues" ofType="com.bbo.gmall.manage.bean.pms.PmsProductSaleAttrValue" autoMapping="true">
             <result column="sav_id" property="id"></result>
         </collection>
     </resultMap>
 
-    <select id="findByProductIds"  resultType="com.bbo.gmall.bean.pms.PmsProductSaleAttr">
+    <select id="findByProductIds"  resultType="com.bbo.gmall.manage.bean.pms.PmsProductSaleAttr">
         select * from pms_product_sale_attr
         <where>
             <if test="productIds != null and productIds.size() > 0">

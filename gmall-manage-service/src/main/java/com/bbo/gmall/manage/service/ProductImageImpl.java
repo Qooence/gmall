@@ -1,9 +1,9 @@
 package com.bbo.gmall.manage.service;
 
-import com.bbo.gmall.bean.pms.PmsProductImage;
+import com.bbo.gmall.manage.bean.pms.PmsProductImage;
 import com.bbo.gmall.manage.config.BaseServiceImpl;
 import com.bbo.gmall.manage.mapper.PmsProductImageMapper;
-import com.bbo.gmall.service.pms.ProductImageService;
+import com.bbo.gmall.manage.service.pms.ProductImageService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 

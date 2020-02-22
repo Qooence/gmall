@@ -1,9 +1,9 @@
 package com.bbo.gmall.manage.controller;
 
-import com.bbo.gmall.bean.pms.PmsBaseCatalog1;
-import com.bbo.gmall.bean.pms.PmsBaseCatalog2;
-import com.bbo.gmall.bean.pms.PmsBaseCatalog3;
-import com.bbo.gmall.service.pms.CatalogService;
+import com.bbo.gmall.manage.bean.pms.PmsBaseCatalog1;
+import com.bbo.gmall.manage.bean.pms.PmsBaseCatalog2;
+import com.bbo.gmall.manage.bean.pms.PmsBaseCatalog3;
+import com.bbo.gmall.manage.service.pms.CatalogService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

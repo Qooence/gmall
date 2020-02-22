@@ -1,8 +1,8 @@
 package com.bbo.gmall.manage.service;
 
-import com.bbo.gmall.bean.pms.PmsBaseSaleAttr;
+import com.bbo.gmall.manage.bean.pms.PmsBaseSaleAttr;
 import com.bbo.gmall.manage.config.BaseServiceImpl;
-import com.bbo.gmall.service.pms.SaleAttrService;
+import com.bbo.gmall.manage.service.pms.SaleAttrService;
 import org.apache.dubbo.config.annotation.Service;
 
 @Service

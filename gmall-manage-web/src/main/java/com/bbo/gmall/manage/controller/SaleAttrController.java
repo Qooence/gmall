@@ -1,8 +1,8 @@
 package com.bbo.gmall.manage.controller;
 
-import com.bbo.gmall.bean.pms.PmsBaseSaleAttr;
-import com.bbo.gmall.response.Response;
-import com.bbo.gmall.service.pms.SaleAttrService;
+import com.bbo.gmall.manage.bean.pms.PmsBaseSaleAttr;
+import com.bbo.gmall.manage.response.Response;
+import com.bbo.gmall.manage.service.pms.SaleAttrService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

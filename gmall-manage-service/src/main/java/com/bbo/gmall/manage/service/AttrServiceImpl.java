@@ -1,13 +1,13 @@
 package com.bbo.gmall.manage.service;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.bbo.gmall.bean.pms.PmsBaseAttrInfo;
-import com.bbo.gmall.bean.pms.PmsBaseAttrValue;
+import com.bbo.gmall.manage.bean.pms.PmsBaseAttrInfo;
+import com.bbo.gmall.manage.bean.pms.PmsBaseAttrValue;
 import com.bbo.gmall.manage.config.BaseServiceImpl;
+import com.bbo.gmall.manage.service.pms.AttrService;
+import com.bbo.gmall.manage.util.CompareListBeanUtil;
 import com.bbo.gmall.manage.mapper.PmsBaseAttrInfoMapper;
 import com.bbo.gmall.manage.mapper.PmsBaseAttrValueMapper;
-import com.bbo.gmall.manage.util.CompareListBeanUtil;
-import com.bbo.gmall.service.pms.AttrService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
