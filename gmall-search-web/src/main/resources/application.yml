@@ -1,0 +1,30 @@
+
+server:
+  port: 8083
+
+logging:
+  config: classpath:logback-spring.xml
+
+spring:
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+
+dubbo:
+  application:
+    name: search-web
+  protocol:
+    name: dubbo
+  registry:
+    address: 192.168.45.180:2181
+    protocol: zookeeper
+  base-package: com.bbo.gmall
+  consumer:
+    timeout: 600000
+    check: false
+  qos:
+    enable: true
+    port: 33338
+    accept:
+      foreign:
+        ip: false

@@ -23,5 +23,5 @@ public interface SkuInfoService extends BaseService<PmsSkuInfo> {
 
     List<PmsSkuInfo> getSkuSaleAttrValueListBySpu(String productId);
 
-
+    List<PmsSkuInfo> getAllSku();
 }

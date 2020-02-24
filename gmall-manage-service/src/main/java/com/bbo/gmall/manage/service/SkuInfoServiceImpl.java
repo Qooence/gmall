@@ -16,9 +16,7 @@ import com.bbo.gmall.manage.mapper.PmsSkuInfoMapper;
 import com.bbo.gmall.util.RedisUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.gson.annotations.JsonAdapter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.ThreadUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -239,6 +237,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl<PmsSkuInfo> implements S
         return pmsSkuInfos;
     }
 
+    @Override
+    public List<PmsSkuInfo> getAllSku(){
+        List<PmsSkuInfo> skuInfos = skuInfoMapper.selectAll();
+        for (PmsSkuInfo skuInfo : skuInfos) {
+            String skuId = skuInfo.getId();
+
+            PmsSkuAttrValue pmsSkuAttrValue = new PmsSkuAttrValue();
+            pmsSkuAttrValue.setSkuId(skuId);
+            List<PmsSkuAttrValue> pmsSkuAttrValues = attrValueMapper.select(pmsSkuAttrValue);
+            skuInfo.setSkuAttrValueList(pmsSkuAttrValues);
+        }
+        return skuInfos;
+    }
 
     private void insertAndDelete(PmsSkuInfo info,Boolean isUpdate,Boolean isDelete){
 

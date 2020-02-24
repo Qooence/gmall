@@ -59,6 +59,7 @@ dubbo:
     name: manage-service
   protocol:
     name: dubbo
+    port: 20880
   registry:
 #    address: 127.0.0.1:2181
     address: 192.168.45.180:2181
